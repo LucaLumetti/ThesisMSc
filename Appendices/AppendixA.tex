@@ -1,0 +1,327 @@
+% Appendix A
+
+\chapter{YACCLAB Results} % Main appendix title
+
+\label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
+
+\lhead{Appendix A. \emph{YACCLAB Results}} % This is for the header on each page - perhaps a shortened title
+
+In this Appendix we report the automatic generated charts and tables from \textit{YACCLAB} project. As said before in Chapter~\ref{chp:YACCLAB}, tests were performed on each algorithm included in \textit{YACCLAB}, on all datasets, and on four different environments:
+
+\begin{enumerate}
+\item \textit{Windows} \textit{PC} with a i7-4790 \textit{CPU} @ 3.60GHz and \textit{Microsoft Visual Studio} 2013; 
+\item Intel Core i7-4980HQ \textit{CPU} @ 2.80GHz running \textit{OS~X} with \textit{XCode} 7.2.1;
+\item \textit{Windows} \textit{PC} with a i5-6600 \textit{CPU} @ 3.30GHz and \textit{Microsoft Visual Studio} 2013; 
+\item Intel Core 2 Duo-T9600 \textit{CPU} @ 2.80GHz running \textit{OS~X} with \textit{XCode} 7.2.1. 
+\end{enumerate}
+
+Every test was repeated 10 times, and for each image the minimum execution time was considered. For a detailed discussion over results or details about the acronyms meaning see Section~\ref{sec:results}.
+
+\clearpage
+
+% TODO aggiornare tabelle LINUX completa
+% Averages Lorenzo Windows
+\begin{table}
+	\centering
+	\caption{Average results in ms on a i7-4790 \textit{CPU} @ 3.60GHz with \textit{Windows} and \textit{Microsoft Visual Studio} 2013 (lower is better).}
+	\label{tab:appendix_ilb14_averages}
+	\begin{tabular}{|l|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|}
+	\hline
+	 & {SAUF} & {DiStefano} & {BBDT} & {CT} & {CCIT}\\
+	\hline
+	MIRflickr  & 0.611 & 0.658  & 0.261 & 0.746  & 0.295\\
+    Hamlet     & 6.493 & 7.451  & 5.057 & 9.849  & 6.051\\
+	Tobacco800 & 9.702 & 10.981 & 7.595 & 13.371 & 9.481\\
+    Medical    & 3.469 & 3.746  & 1.983 & 4.526  & 2.457\\
+    Fingerprints & 0.457 & 0.545 & 0.256 & 0.852 & 0.296\\
+	3DPeS      & 0.754 & 0.844  & 0.580 & 1.015  & 0.745\\
+	\hline
+	\end{tabular}
+\vskip 1em   
+    \begin{tabular}{|l|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|}
+	\hline
+	& {LSL\_STD} & {CTB} & {SBLA} & {PRED} & {NULL}\\
+	\hline
+	MIRflickr   & 0.464  & 0.397  & 1.451  & 0.328 & 0.187\\
+    Hamlet      & 19.422 & 7.418  & 17.455 & 6.155 & 4.274\\
+	Tobacco800  & 29.869 & 12.145 & 27.085 & 9.701 & 6.481\\
+    Medical     & 7.564  & 3.289  & 8.506  & 2.592 & 1.710\\
+    Fingerprints& 0.462 & 0.359 & 1.146 & 0.314 & 0.203\\
+	3DPeS       & 2.139  & 1.046  & 2.226  & 0.802 & 0.538\\
+	\hline
+	\end{tabular}
+\end{table}
+
+%Average Stefano Mac
+\begin{table}
+	\centering
+	\caption{Average results in ms on an Intel Core i7-4980HQ \textit{CPU} @ 2.80GHz running \textit{OS~X} with \textit{XCode} 7.2.1 (lower is better).}
+	\label{tab:appendix_stefano_averages}
+	\begin{tabular}{|l|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|}
+	\hline
+	 & {SAUF} & {DiStefano} & {BBDT} & {CT} & {CCIT}\\
+	\hline
+    MIRflickr     & 0.420 & 0.663 & 0.296 & 0.750  & 0.349 \\
+	Hamlet        & 5.710 & 6.379 & 3.969 & 8.527  & 4.861 \\
+	Tobacco800    & 9.085 & 9.551 & 5.987 & 11.193 & 7.957 \\
+	Medical       & 2.573 & 3.339 & 1.704 & 3.897  & 2.053 \\
+	Fingerprints  & 0.340 & 0.527 & 0.297 & 0.818  & 0.339 \\
+	3DPeS         & 0.519 & 0.640 & 0.416 & 0.767  & 0.495 \\
+	
+	\hline
+	\end{tabular}
+\vskip 1em   
+    \begin{tabular}{|l|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|}
+	\hline
+	& {LSL\_STD} & {CTB} & {SBLA} & {PRED} & {NULL}\\
+	\hline
+	MIRflickr     & 0.375 & 0.368 & 1.046 & 0.331 & 0.182   \\
+	Hamlet        & 11.798 & 4.612 & 12.613 & 4.297 & 2.996 \\
+	Tobacco800    & 23.013 & 7.554 & 19.359 & 6.693 & 4.340 \\
+	Medical       & 5.662 & 2.159 & 5.897 & 1.949 & 1.282   \\
+	Fingerprints  & 0.301 & 0.307 & 0.866 & 0.289 & 0.181   \\
+    3DPeS         & 0.798 & 0.464 & 1.566 & 0.420 & 0.274   \\
+	\hline
+	\end{tabular}
+\end{table}
+
+% Averages Canci Windows
+\begin{table}
+	\centering
+	\caption{Average results in ms on a \textit{Windows} \textit{PC} with a i5-6600 \textit{CPU} @ 3.30GHz and \textit{Microsoft Visual Studio} 2013 (lower is better).}
+	\label{tab:appendix_canci_averages}
+	\begin{tabular}{|l|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|}
+	\hline
+	 & {SAUF} & {DiStefano} & {BBDT} & {CT} & {CCIT}\\
+	\hline
+	MIRflickr    & 0.776  & 0.834 & 0.409 & 0.965 & 0.508    \\
+    Hamlet       & 7.717  & 8.125 & 5.309 & 9.901 & 6.376    \\
+	Tobacco800   & 12.441 & 12.563 & 7.974 & 13.422 & 10.159 \\
+    Medical      & 3.955  & 4.116 & 2.244 & 4.632 & 2.826    \\
+    Fingerprints & 0.535  & 0.644 & 0.329 & 0.985 & 0.400    \\
+	3DPeS        & 1.042  & 0.970 & 0.624 & 1.011 & 0.806    \\
+	\hline
+	\end{tabular}
+\vskip 1em   
+    \begin{tabular}{|l|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|}
+	\hline
+	& {LSL\_STD} & {CTB} & {SBLA} & {PRED} & {NULL}\\
+	\hline
+	MIRflickr    & 1.037 & 0.521 & 1.460 & 0.492 & 0.275\\
+    Hamlet       & 17.812 & 5.996 & 15.581 & 6.059 & 3.627\\
+	Tobacco800   & 29.661 & 10.029 & 24.937 & 9.828 & 5.656\\
+    Medical      & 7.932 & 2.820 & 7.949 & 2.680 & 1.579\\
+	Fingerprints & 0.671 & 0.382 & 1.115 & 0.378 & 0.231\\
+    3DPeS        & 2.217 & 0.826 & 2.002 & 0.808 & 0.455\\
+	\hline
+	\end{tabular}
+\end{table}
+
+% Averages Federico MAC
+\begin{table}
+	\centering
+	\caption{Average results in ms on an Intel Core 2 Duo-T9600 @ 2.80GHz running \textit{OS~X} with \textit{XCode} 7.2.1 (lower is better).}
+	\label{tab:appendix_pro_mid2009_averages}
+	\begin{tabular}{|l|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|}
+	\hline
+	 & {SAUF} & {DiStefano} & {BBDT} & {CT} & {CCIT}\\
+	\hline
+	MIRflickr    & 0.948 & 1.289 & 0.613 & 1.496 & 0.698      \\
+    Hamlet       & 14.529 & 13.950 & 10.348 & 20.630 & 15.827 \\
+	Tobacco800   & 25.209 & 22.553 & 18.119 & 29.343 & 28.360 \\
+    Medical      & 6.041 & 6.745 & 3.931 & 8.769 & 5.700      \\
+    Fingerprints & 0.678 & 1.024 & 0.567 & 1.555 & 0.611      \\
+	3DPeS        & 1.078 & 1.342 & 0.984 & 1.601 & 1.120      \\
+	\hline
+	\end{tabular}
+\vskip 1em   
+    \begin{tabular}{|l|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|S[table-format=2.3, table-column-width=1.5cm]|}
+	\hline
+	& {LSL\_STD} & {CTB} & {SBLA} & {PRED} & {NULL}\\
+	\hline
+	MIRflickr    & 1.201 & 0.846 & 2.311 & 0.692 & 0.345\\
+	Hamlet       & 35.595 & 16.016 & 24.590 & 13.846 & 6.506\\
+	Tobacco800   & 63.384 & 29.564 & 37.672 & 25.560 & 10.758\\
+    Medical      & 16.544 & 6.367 & 12.354 & 5.047 & 2.465\\
+	Fingerprints & 0.817 & 0.649 & 1.706 & 0.583 & 0.349\\
+	3DPeS        & 3.322 & 1.511 & 2.920 & 1.101 & 0.598\\
+	\hline
+	\end{tabular}
+\end{table}
+
+%Averages Lorenzo Windows
+\begin{figure*}
+\centering
+\subfigure[MIRflickr] {
+	\includegraphics[width=.48\textwidth]{ilb14_averages_mirflickr}
+}
+\subfigure[Hamlet] {
+	\includegraphics[width=.48\textwidth]{ilb14_averages_hamlet}
+}
+\subfigure[Tobacco800] {
+	\includegraphics[width=.48\textwidth]{ilb14_averages_tobacco800}
+}
+\subfigure[Medical] {
+	\includegraphics[width=.48\textwidth]{ilb14_averages_medical}
+}
+\subfigure[Fingerprints] {
+	\includegraphics[width=.48\textwidth]{ilb14_averages_fingerprints}
+}
+\subfigure[3DPeS] {
+	\includegraphics[width=.48\textwidth]{ilb14_averages_3dpes}
+}
+\caption{Average run-time tests on a i7-4790 \textit{CPU} @ 3.60GHz with \textit{Windows} and \textit{Microsoft Visual Studio} 2013 (lower is better).}
+\label{fig:appendix_ilb14_averages}
+\end{figure*}
+
+%Averages Stefano Mac
+\begin{figure*}
+\centering
+\subfigure[MIRflickr] {
+	\includegraphics[width=.48\textwidth]{stefano_averages_mirflickr}
+}
+\subfigure[Hamlet] {
+	\includegraphics[width=.48\textwidth]{stefano_averages_hamlet}
+}
+\subfigure[Tobacco800] {
+	\includegraphics[width=.48\textwidth]{stefano_averages_tobacco800}
+}
+\subfigure[Medical] {
+	\includegraphics[width=.48\textwidth]{stefano_averages_medical}
+}
+\subfigure[Fingerprints] {
+	\includegraphics[width=.48\textwidth]{stefano_averages_fingerprints}
+}
+\subfigure[3DPeS] {
+	\includegraphics[width=.48\textwidth]{stefano_averages_3dpes}
+}
+\caption{Average run-time tests on an Intel Core i7-4980HQ \textit{CPU} @ 2.80GHz running \textit{OS~X} with \textit{XCode} 7.2.1 (lower is better).}
+\label{fig:appendix_stefano_averages}
+\end{figure*}
+
+%Averages Canci Windows
+\begin{figure*}
+\centering
+\subfigure[MIRflickr] {
+	\includegraphics[width=.48\textwidth]{canci_averages_mirflickr}
+}
+\subfigure[Hamlet] {
+	\includegraphics[width=.48\textwidth]{canci_averages_hamlet}
+}
+\subfigure[Tobacco800] {
+	\includegraphics[width=.48\textwidth]{canci_averages_tobacco800}
+}
+\subfigure[Medical] {
+	\includegraphics[width=.48\textwidth]{canci_averages_medical}
+}
+\subfigure[Fingerprints] {
+	\includegraphics[width=.48\textwidth]{canci_averages_fingerprints}
+}
+\subfigure[3DPeS] {
+	\includegraphics[width=.48\textwidth]{canci_averages_3dpes}
+}
+\caption{Average run-time tests on a i5-6600 \textit{CPU} @ 3.30GHz with \textit{Windows} and \textit{Microsoft Visual Studio} 2013 (lower is better).}
+\label{fig:appendix_canci_averages}
+\end{figure*}
+
+
+%Averages Federico Mac
+\begin{figure*}
+\centering
+\subfigure[MIRflickr] {
+	\includegraphics[width=.48\textwidth]{pro_mid2009_averages_mirflickr}
+}
+\subfigure[Hamlet] {
+	\includegraphics[width=.48\textwidth]{pro_mid2009_averages_hamlet}
+}
+\subfigure[Tobacco800] {
+	\includegraphics[width=.48\textwidth]{pro_mid2009_averages_tobacco800}
+}
+\subfigure[Medical] {
+	\includegraphics[width=.48\textwidth]{pro_mid2009_averages_medical}
+}
+\subfigure[Fingerprints] {
+	\includegraphics[width=.48\textwidth]{pro_mid2009_averages_fingerprints}
+}
+\subfigure[3DPeS] {
+	\includegraphics[width=.48\textwidth]{pro_mid2009_averages_3dpes}
+}
+\caption{Average run-time tests on an Intel Core 2 Duo-T9600 @ 2.80GHz with \textit{OS~X} and \textit{XCode} 7.2.1 (lower is better).}
+\label{fig:appendix_pro_mid2009_averages}
+\end{figure*}
+
+% Density Lorenzo Windows
+\begin{figure}
+	\centering
+	\subfigure[Density test] {
+		\includegraphics[width=.59\columnwidth]{ilb14_density_cropped}
+        \label{fig:appendix_ilb14_density}
+	}
+    \subfigure[NULL-Normalized Density test] {
+		\includegraphics[width=.59\columnwidth]{ilb14_normalized_density_cropped}
+        \label{fig:appendix_ilb14_normalized_density}
+	}
+	\subfigure[Size test] {
+		\includegraphics[width=.59\columnwidth]{ilb14_size_cropped}
+        \label{fig:appendix_ilb14_size}
+	}
+    \caption{Density, Size and NULL-Normalized Density tests on a i7-4790 \textit{CPU} @ 3.60GHz with \textit{Windows} and \textit{Microsoft Visual Studio} 2013 (lower is better).}
+    \label{fig:appendix_dsn_ilb14}
+\end{figure}
+
+%Density Stefano MAC
+\begin{figure}
+	\centering
+	\subfigure[Density test] {
+		\includegraphics[width=.59\columnwidth]{stefano_density_cropped}
+        \label{fig:appendix_stefano_density}
+	}
+    \subfigure[NULL-Normalized Density test] {
+		\includegraphics[width=.59\columnwidth]{stefano_size_cropped}
+        \label{fig:appendix_stefano_normalized_density}
+	}
+	\subfigure[Size test] {
+		\includegraphics[width=.59\columnwidth]{stefano_size_cropped}
+        \label{fig:appendix_stefano_size}
+	}
+    \caption{Density, Size and NULL-Normalized Density tests on an Intel Core i7-4980HQ \textit{CPU} @ 2.80GHz running \textit{OS~X} with \textit{XCode} 7.2.1 (lower is better).}
+    \label{fig:appendix_dsn_stefano}
+\end{figure}
+
+%Density Canci Windows
+\begin{figure}
+	\centering
+	\subfigure[Density test] {
+		\includegraphics[width=.59\columnwidth]{canci_density_cropped}
+        \label{fig:appendix_canci_density}
+	}
+    \subfigure[NULL-Normalized Density test] {
+		\includegraphics[width=.59\columnwidth]{canci_normalized_density_cropped}
+        \label{fig:appendix_canci_normalized_density}
+	}
+	\subfigure[Size test] {
+		\includegraphics[width=.59\columnwidth]{canci_size_cropped}
+        \label{fig:appendix_canci_size}
+	}
+    \caption{Density, Size and NULL-Normalized Density tests on a \textit{Windows} \textit{PC} with a i5-6600 \textit{CPU} @ 3.30GHz and \textit{Microsoft Visual Studio} 2013 (lower is better).}
+    \label{fig:appendix_dsn_canci}
+\end{figure}
+
+%Density Federico Mac
+\begin{figure}
+	\centering
+	\subfigure[Density test] {
+		\includegraphics[width=.59\columnwidth]{pro_mid2009_density_cropped}
+        \label{fig:appendix_pro_mid2009_density}
+	}
+    \subfigure[NULL-Normalized Density test] {
+		\includegraphics[width=.59\columnwidth]{pro_mid2009_normalized_density_cropped}
+        \label{fig:appendix_pro_mid2009_normalized_density}
+	}
+	\subfigure[Size test] {
+		\includegraphics[width=.59\columnwidth]{pro_mid2009_size_cropped}
+        \label{fig:appendix_pro_mid2009_size}
+	}
+    \caption{Density, Size and NULL-Normalized Density tests on an Intel Core 2 Duo-T9600 @ 2.80GHz running \textit{OS~X} with \textit{XCode} 7.2.1 (lower is better).}
+    \label{fig:appendix_dsn_pro_mid2009}
+\end{figure}

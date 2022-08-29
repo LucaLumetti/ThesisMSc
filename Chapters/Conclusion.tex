@@ -1,0 +1,23 @@
+\chapter{Conclusions and future work}
+
+\lhead{\textit{Conclusions and Future Work}} % This is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+
+\section{Conclusion}
+\label{sec:conclusion}
+The work described in this thesis has been concerned with the analysis and development of Connected Components Labeling Algorithms and it provides four contribution elements to the image processing community. 
+
+First of all we accommodate a comprehensive dataset for comparing \textit{CCL} algorithms and a portable open-source \textit{C++} project to test different algorithms on top of it. This tool allows any new improvement to be evaluated uniformly with respect to existing proposals and cover a lack in literature. 
+
+The third contribution -- in order to improve to performance of \textit{connectedComponents} function of the \textit{OpenCV} -- is the implementation of an optimized and compliant version of the Optimized Block Based with Decision Trees algorithm proposed by Grana \etal on 2010. The submitted code has passed all the automatic tests (both performance and correctness tests) run by the \textit{OpenCV} and is currently under review.
+
+Finally, we presented a novel approach for performing Connected Components Labeling, which employs a reproducible strategy able to avoid repeatedly checking the same pixels multiple times. Experimental results are very promising and even if the current algorithm is not able to beat \textit{BBDT} (the first best algorithm accordingly to the \textit{YACCLAB} benchmark) on the real datasets, it was faster on the synthetic one for low density cases (except for tests on the Intel Core 2 Duo-T9600 @ 2.80GHz with \textit{OS~x}).
+
+\section{Recommendation for Future Work}
+
+We are strongly in favor of testing paper results with source code: it is not a lack of trust in the other researchers, but a realistic need to compare. Instead of forcing everybody to reimplement other algorithms code from scratch, and then draw wrong conclusions because they overlooked a peculiarity (probably insufficiently stressed in the original paper), we support the fact that the inventor knows its creature best. Therefore, we welcome all contributions to \textit{YACCLAB} in terms of new algorithms, novel datasets for applications we did not consider, or better implementations of what we already included. It is not likely that the code we are providing is the best you can write, so review and improvement is mandatory. 
+
+Moreover, further work is needed to systematically test these algorithms on different machines to point out weaknesses and strengths of the various proposals. And if you are going to sport that your algorithm is the fastest in the world, please make the source code available in \textit{YACCLAB}.
+
+Finally, for what concerned the Pixel Prediction algorithm, we plan to apply the same optimization strategy also to the \textit{BBDT} algorithm, but in this case the tree reduction cannot be performed \emph{by hand}, given the enormous size of the decision tree. 

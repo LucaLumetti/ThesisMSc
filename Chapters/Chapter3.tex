@@ -1,0 +1,48 @@
+% Chapter 3
+
+\chapter{Image Segmentation}
+
+\lhead{Chapter 3. \emph{Image Segmentation}} % This is for the header on each page - perhaps a shortened title
+\label{chp:segmentation}
+%----------------------------------------------------------------------------------------
+
+\def\:{\hskip0pt} %Definisce un modo veloce per permettere a latex di sillabare correttamente anche parole come 4-connectivity. Il corretto utilizzo è il seguente: 4\:-\:connectivity.
+
+\section{Introduction}
+Image segmentation is a well known topic in computer and image processing with a
+wide range of application, such as medical imaging, robotics, video
+surveillance, etc.
+It involves partitioning images into one or more objects and can also includes
+classify these objects. Many traditional algorithms have been developed in the
+literature but, in the most recent years, they have all been dominated by deep
+neural networks. Since the 2015 a huge amount of different types of networks
+that aim to perform image segmentation has been proposed for each of the field
+where it's needed.
+Before presenting how nowday segmentation is performed, we must state which are
+the different type of segmentation that have been classified.
+
+\subsection{Semantic Segmentation}
+Semantic Segmentation perform a pixel-by-pixel classification with a predefined
+set of objects categories for all the pixels of the images. In pratice, given a
+RGB image (\texttt{height} $\times$ \texttt{width} $times$ \texttt{3}) we output
+a segmentation map of size (\texttt{height} $\times$ \texttt{width} $\times$
+\texttt{1}) where each value correspond to which class the same pixel in the
+original images belongs.
+
+\subsection{Instance segmentation}
+One possible issue of semantic segmentation is that it doesn't allow to
+distinguish two or more object of the same class when they overlap in the image.
+Instance segmentation overcome this problem by outputting a different number of
+channels based on the number of instances present in the image.
+
+\subsection{Panoptic segmentation}
+The latter type of segmentation is called Panoptic segmentation and is the
+result of the previously presented method joined together. The difference with
+the instance segmentation is that in this case instances are not allowed to
+overlap then for to a single pixel, a single instance must be assigned.
+
+\subsection{Segmentation using Deep Neural Networks}
+As stated before, nowdays deep learning is the dominant method used for
+segmentation. Convolutional Neural Networks are still the most used type of
+networks used to date but new promising technique, as Graph Neural Networks or
+Transformers, are always more and more used.
