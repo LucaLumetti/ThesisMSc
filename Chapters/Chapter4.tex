@@ -139,10 +139,91 @@ Transformation functions which were previously defined in the same file of the
 data loader have been moved in a new file. Some of them were already implemented
 inside TorchIO and thus have been removed. The remaining ones have been adapted
 to inherith from the abstract \texttt{class torchio.transforms.Transform}, in
-order to be easly used inside TorchIO, such with the Composability method which
-allow to create a directed acyclic graph of transformations that must be applied
-to the data.
+order to be easly used inside TorchIO, such with the \emph{Composability} method
+which allow to create a directed acyclic graph of transformations that must be
+applied to the data.
 
+\subsection{Config and command line arguments}
+In the original codebase, the parameters of the program were passed both as
+arguments from the command line and in the config file. This could generate some
+confusion and make harder to reproduce an experiments as the config file alone
+wasn't enough. For this reason, the config file is now the only source of
+parameters, while the only arguments that the software accepts are the path of the
+config file and a boolean value to enable/disable Tensorflow.
+An example of config file is shown below:
 
+\begin{lstlisting}[language=YAML,breaklines=true,caption=Example of config file., label=union]
+title: 'canal_generator_train'
+project_dir: '/homes/llumetti/results'
+seed: 47
+tensorboard_dir: '/homes/llumetti/tensorboard'
 
+experiment:
+  name: 'Generation'
 
+data_loader:
+  dataset: '/nas/softechict-nas-1/llumetti/maxillo'
+  augmentations: 'configs/augmentations.yaml'
+  background_suppression: 0
+  batch_size: 2
+  labels:
+    BACKGROUND: 0
+    INSIDE: 1
+  mean: 0.08435
+  num_workers: 8
+  patch_shape:
+  - 120
+  - 120
+  - 120
+  resize_shape:
+  - 168
+  - 280
+  - 360
+  sampler_type: grid
+  grid_overlap: 0
+  std: 0.17885
+  volumes_max: 2100
+  volumes_min: 0
+  weights:
+  - 0.000703
+  - 0.999
+
+model:
+  name: 'PosPadUNet3D'
+
+loss:
+  name: 'Jaccard'
+
+lr_scheduler:
+  name: 'Plateau'
+
+optimizer:
+  learning_rate: 0.1
+  name: 'SGD'
+
+trainer:
+  reload: False
+  checkpoint: null
+  do_train: False
+  do_test: False
+  do_inference: True
+  epochs: 100
+\end{lstlisting}
+
+\subsection{Interfaces}
+Something about interfaces used for Models, Losses, Optimizers, Schedulers and
+Experiments...
+
+\subsection{Deploying and Running}
+The code was managed using Git and the repository is hosted on GitHub the
+repository is public and can be found at \url{https://github.com/AImageLab-zip/alveolar\_canal}.
+By using Git, it was possible to easly deploy the code on the AImagelab Server by
+means of a simple script which keeps the code up to date with the main branch.
+Other branches were used to develop new features and to test them before merging
+everything in the main branch. The Gitflow workflow was used to manage the
+branches. The training was scheduled using the SLURM scheduler, which is
+installed on the server. Some scripts were written to automatize the training
+process, which often required to run sequentially multiple experiments with
+different configurations file and to recover training from a given checkpoint
+when the training was long and the scheduler kill the process for exceeding the
+time limit.

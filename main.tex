@@ -44,7 +44,7 @@
 \SetKwRepeat{Do}{do}{while}%
 
 \lstset{
-	language=C++,
+	language=Python,
 	basicstyle=\ttfamily,
 	keywordstyle=\color{blue}\ttfamily,
 	stringstyle=\color{red}\ttfamily,
@@ -53,6 +53,45 @@
 	}
 
 \hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoying
+
+\newcommand\YAMLcolonstyle{\color{red}\mdseries}
+\newcommand\YAMLkeystyle{\color{black}\bfseries}
+\newcommand\YAMLvaluestyle{\color{blue}\mdseries}
+
+\makeatletter
+
+% here is a macro expanding to the name of the language
+% (handy if you decide to change it further down the road)
+\newcommand\language@yaml{yaml}
+
+\expandafter\expandafter\expandafter\lstdefinelanguage
+\expandafter{\language@yaml}
+{
+  keywords={true,false,null,y,n},
+  keywordstyle=\color{darkgray}\bfseries,
+  basicstyle=\YAMLkeystyle,                                 % assuming a key comes first
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\YAMLvaluestyle\ttfamily,
+  moredelim=[l][\color{orange}]{\&},
+  moredelim=[l][\color{magenta}]{*},
+  moredelim=**[il][\YAMLcolonstyle{:}\YAMLvaluestyle]{:},   % switch to value style at :
+  morestring=[b]',
+  morestring=[b]",
+  literate =    {---}{{\ProcessThreeDashes}}3
+                {>}{{\textcolor{red}\textgreater}}1
+                {|}{{\textcolor{red}\textbar}}1
+                {\ -\ }{{\mdseries\ -\ }}3,
+}
+
+% switch to key style at EOL
+\lst@AddToHook{EveryLine}{\ifx\lst@language\language@yaml\YAMLkeystyle\fi}
+\makeatother
+
+\newcommand\ProcessThreeDashes{\llap{\color{cyan}\mdseries-{-}-}}
+
 \title{\ttitle} % Defines the thesis title - don't touch this
 
 \begin{document}
@@ -93,7 +132,7 @@
 %\HRule \\[0.6cm] % Horizontal line
 %{\huge \bfseries \ttitleITA}\\[0.4cm] % Thesis title
 \HRule \\[3.2 cm] % Horizontal line
- 
+
 \begin{minipage}{0.4\textwidth}
 \begin{flushleft} \large
 \emph{Candidato:}\\
@@ -103,19 +142,19 @@
 \begin{minipage}{0.4\textwidth}
 \begin{flushright} \large
 \emph{Relatore:} \\
-\supname \\ % Supervisor name - remove the \href bracket to remove the link  
+\supname \\ % Supervisor name - remove the \href bracket to remove the link
 \emph{Correlatore:} \\
-\cosupname \\ % Supervisor name - remove the \href bracket to remove the link  
+\cosupname \\ % Supervisor name - remove the \href bracket to remove the link
 \end{flushright}
 \end{minipage}\\[5.0cm]
- 
+
 %\large \textit{A thesis submitted in fulfilment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
 %\textit{in the}\\[0.4cm]
 %\groupname\\\deptname\\[2cm] % Research group name and department name
- 
+
 \textsc{\large Anno Accademico 2021-2022}\\[4cm] % Date
 %\includegraphics{Logo} % University/department logo - uncomment to place it
- 
+
 \vfill
 \end{center}
 
@@ -148,17 +187,76 @@
 %	ABSTRACT PAGES
 %----------------------------------------------------------------------------------------
 \addtotoc{Abstract in English} % Add the "Abstract" page entry to the Contents
-%
 \englishAbstract{\addtocontents{toc}{\vspace{1em}} % Add a gap in the Contents, for aesthetics
+Dental implant placement within the jawbone is a routinely executed surgical
+procedure, which can become complex due to the local presence of the Inferior
+Alveolar Nerve (IAN). In particular, the nerve is oftentimes in close relation
+to the roots of molars, and its position must thus be carefully detailed before
+the surgical removal. As avoiding contact with the IAN is a primary concern
+during these operations, segmentation plays a key role in surgical
+preparations.\\ Unfortunately, 3D manual segmentation requires a huge amount of
+time to be carried out, thus perfect anatomical annotations are usually
+overlooked in favor of fast executions. The de facto standard in radiology
+medical centers for dentistry and maxilla facial purposes is based on sparse
+annotations, which can be obtained from 2D images in a relatively small amount
+of time. This type of annotation fails to identify a considerable amount of
+inner information about the IAN position and the bone structure.
+Convolutional Neural Networks are known to provide amazing results in the
+segmentation task and could provide to medical operators an automatic and
+precise way to detect the IAN in patients, allow them to be more accurate during
+the operations where this information is critical. This type of network requires
+a large amount of labeled data to reach a good level of accuracy while in the
+medical field is hard and expensive to acquire, meanwhile a good amount of
+unlabeled data is available.\\
+In this work we study and analyze the effectiveness of some of the most recent
+proposal made in the literature for segmentation in the medical imaging field,
+some of which have recently obtained state-of-the-art results for other similar
+tasks. Even if we do not reach the same level of accuracy we expected, we show
+that we were able to improve the speed of the training process and the
+performance of the network, while keeping the same level of accuracy of the
+original network.
 
-\textbf{Keywords:} Medical Imaging, Cone Bean Computed Tomography, Inferior Alveolar Canal, Image Segmentation, Deep Learning.
+%Depositate anche su esse3, quindi se le cambi cambia anche lì
+\textbf{Keywords:} Medical Imaging, Deep Learning, 3D Segmentation, Computer Vision, Cone Beam Computed Tomography.
 }
 \clearpage % Start a new page
 
 \addtotoc{Abstract in Italian} % Add the "Abstract" page entry to the Contents
 \italianAbstract{\addtocontents{toc}{\vspace{1em}} % Add a gap in the Contents, for aesthetics
+L'inserimento di impianti dentali nella mascella è una ruotine chirurgica
+abbastanza comune, ma è resa non banale dalla presenza del nervo alveolare
+inferiore. Questo nervo è posizionato in prossimità delle radici dei molari,
+e la sua posizione deve essere accuratamente delineata prima di poter eseguire
+l'operazione voluta, in quanto danneggiare tale nervo potrebbe essere causa di
+gravi conseguenze per il paziente, come ad esempio la perdita della
+sensibilità o la paralisi di tale zona. Poichè evitare il contatto con questo
+nervo è essenziale, un'accurata segmentazione di tale nervo è un requisito
+chiave. Sfortunatamente, una segmentazione 3D manuale richiede un'enorme
+quantità di tempo, per questo motivo solitamente si preferiscono metodi meno
+precisi ma più veloci e per questo motivo lo standard de-facto per i dentisti è
+basato sull'effettuare una annotazione sparsa, ottenuta da immagini 2D. Questo
+tipo di annotazione fallisce nell'identificare una buona parte delle
+informazioni che riguardano la posizione del nervo e la struttura ossea del
+canale in cui esso è contenuto.\\
+Le reti neurali convolutive hanno dimostrato di poter ottenere risultati ottimi
+nell'effettuare la segmentazione di immagini e in questo caso potrebbe offrire
+ai medici un metodo automatico, preciso e veloce di delineare il nervo alveolare
+inferiore, essenziale soprattutto durante le operazioni più critiche. Questo
+tipo di reti neurali richiede una quantità enorme di dati annotati per poter
+imparare a svolgere correttamente questo tipo di task con una accuratezza
+soddisfacente. In ambito medico, è possibile ottenere una decente quantità di
+immagini, ma non di annotazioni. Per questo motivo è necessario progettare
+accuratamente i metodi utilizzati durante il design e l'allenamento di tali reti
+in modo da superare questa mancanza senza perdere in prestazioni.
+In questa
+tesi, diverse tecniche molto recenti vengono provate ed analizzate, per
+studiarne l'efficacia in questo specifico lavoro. Alcuni metodi che recentemente
+hanno avuto molto successo nell'ambito della computer vision, non hanno avuto
+gli stessi risultati sperati in questo specifico caso, mentre altri approcci si
+sono rivelati molto efficaci nell'ottimizzare e velocizzare il processo di
+training della rete, senza perdere accuratezza nella segmentazione.
 
-\textbf{Parole Chiave:} Medical Imaging, Cone Bean Computed Tomography, Inferior Alveolar Canal, Image Segmentation, Deep Learning.
+\textbf{Parole Chiave:} Medical Imaging, Deep Learning, 3D Segmentation, Computer Vision, Cone Beam Computed Tomography.
 }
 \clearpage % Start a new page
 
@@ -179,10 +277,9 @@ possibile valutare la tesi dalla semplice lettura di queste righe. Per una
 descrizione più dettagliata e più rigorosa, e per i risultati sperimentali
 ottenuti, si rimanda al testo in inglese.
 
-Questa tesi tratta del... Durante il lavoro svolto è inoltre stato pubblicato un
-\textit{paper} attualmente in fase di revisione (si veda l’Appendice per
-ulteriori dettagli).
-
+Questa tesi tratta della segmentazione del canale alveolare inferiore su
+immagini di tomografia conica a fascio di coni (Cone Beam Computed Tomography,
+CBCT) tramite l'utilizzo di reti neurali.\\
 }
 %
 \clearpage % Start a new page
@@ -274,6 +371,7 @@ Foremost, I would like to express my sincere gratitude to ...
 \input{Chapters/Chapter2}
 \input{Chapters/Chapter3}
 \input{Chapters/Chapter4}
+\input{Chapters/Chapter5}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES
@@ -303,4 +401,4 @@ Foremost, I would like to express my sincere gratitude to ...
 \bibliography{Bibliography} % The references (bibliography) information are stored in the file named "Bibliography.bib"
 
 
-\end{document}  
+\end{document}
