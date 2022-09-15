@@ -223,7 +223,7 @@ outputs a gating signal to control the feature importance of pixels at different
 spatial positions.\\
 Another type of attention block is the \emph{Channel attention},
 which utilizes learned global information to emphasize selectively useful
-features and suppress useless features. Hu et al. proposed SE-Net 
+features and suppress useless features. Hu et al. proposed SE-Net
 introducing the channel attention to the field of image analysis and won the
 ImageNet Challenge in 2017.\\
 Spatial and channel attention mechanisms are the two most popular strategies for
@@ -236,12 +236,16 @@ researchers have designed many models based on a \emph{mixed domain attention bl
 
 \subsection{Loss functions}
 In addition to improved segmentation speed and accuracy
-by designing the network backbone and the function block, designing new loss functions also resulted in improvements in subsequent inference-time segmentation accuracy. Therefore,
+by designing the network backbone and the function block, designing new loss
+functions also resulted in improvements in subsequent inference-time
+segmentation accuracy. Therefore,
 a great deal of work has been reported on the design of
 suitable loss functions for medical image segmentation tasks.
 
 \subsubsection{Cross Entropy}
-The cross-entropy loss has been the most popular loss function. It compares pixel-wisely the predicted category vector with the real segmentation result vector and is defined as:
+The cross-entropy loss has been the most popular loss function. It compares
+pixel-wisely the predicted category vector with the real segmentation result
+vector and is defined as:
 $$
 L_{CE} = -\sum_{i=1}^{N} \sum_{j=1}^{C} y_{ij} \log \hat{y}_{ij}
 $$
@@ -256,28 +260,41 @@ problem, where a $\beta$ hyperparameters are added to the loss function to adjus
 the weight of each class.
 
 \subsubsection{Dice Loss}
-The Dice coefficient is a popular metric for the evaluation of medical image segmentation tasks. This metric is the measure of overlap between a segmentation result and its corresponding ground truth:
+The Dice coefficient is a popular metric for the evaluation of medical image
+segmentation tasks. This metric is the measure of overlap between a segmentation
+result and its corresponding ground truth:
 $$
 DSC = \frac{2 \times |A \cap B|}{|A| + |B|}
 $$
-where $A$ and $B$ are the segmentation result and the ground truth, respectively. The \emph{Dice Loss} is then formulated as follow:
+where $A$ and $B$ are the segmentation result and the ground truth,
+respectively. The \emph{Dice Loss} is then formulated as follow:
 $$
 L_{DSC} = 1 - \frac{2 \times y \times \hat{y} + 1}{y + \hat{y} + 1}
 $$
-Here 1 is added to the denominator to avoid the division by zero in the edge case when both $y$ and $\hat{y}$ are zero. The Dice loss is a good choice even for uneven samples, however, it easily influences the backpropagation and leads to a training difficulty.
+Here 1 is added to the denominator to avoid the division by zero in the edge
+case when both $y$ and $\hat{y}$ are zero. The Dice loss is a good choice even
+for uneven samples, however, it easily influences the backpropagation and leads
+  to a training difficulty.
 
 \subsubsection{Generalized Dice Loss}
-Although Dice Loss can solve the problem of class imbalance to a certain extent, it does not work for serious class imbalance.
-To solve this problem, researchers have proposed a \emph{Generalized Dice Loss} that can be used for both binary and multi-class segmentation tasks. The generalized Dice loss is defined as:
+Although Dice Loss can solve the problem of class imbalance to a certain extent,
+it does not work for serious class imbalance. To solve this problem, researchers
+have proposed a \emph{Generalized Dice Loss} that can be used for both binary
+and multi-class segmentation tasks. The generalized Dice loss is defined as:
 $$
 L_{GDSC} = 1 - \frac{1}{m}\frac{2\sum_{j=1}^{m} \omega_j
-\sum_{i=1}^{n}y_{ij}\hat{y}_{ij}}{\sum_{j=1}^{m}\omega_j\sum_{i=1}{n}(y_{ij} +
+\sum_{i=1}^{n}y_{ij}\hat{y}_{ij}}{\sum_{j=1}^{m}\omega_j\sum_{i=1}^{n}(y_{ij} +
 \hat{y}_{ij})}
 $$
 where the weight $\omega_j$ is used to adjust the weight of each class, and $\omega_j = 1/(\sum_{i=1}^{n}p_{ij})^2$.
 
 \subsubsection{Boundary Loss}
-Another approach that solves the problem of class imbalance has been proposed by Kervadec et al. for the task of brain lesion segmentation. They proposed a Boundary Loss which aims to minimize the distance between segmented boundaries and labeled boundaries. Results show that the combination of the Dice loss and the boundary loss is superior to the single ones. The composite loss is defined as:
+Another approach that solves the problem of class imbalance has been proposed by
+Kervadec et al. for the task of brain lesion segmentation. They proposed a
+Boundary Loss which aims to minimize the distance between segmented boundaries
+and labeled boundaries. Results show that the combination of the Dice loss and
+the boundary loss is superior to the single ones. The composite loss is defined
+as:
 $$
 L = \alpha L_{DSC} + (1 - \alpha) L_{B}
 $$
