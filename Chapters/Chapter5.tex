@@ -1,4 +1,4 @@
-% Chapter 4
+% Chapter 5
 
 \chapter{Trying to improve the State of the Art}
 
@@ -258,8 +258,8 @@ As already mentioned, a pre-training phase is performed to overcome the data
 hungriness characteristic of Transformers. The pretraining has been performed by
 paper authors on a variety of datasets of CT scans of different types have been
 used. A total of 5 public CT datasets, consisting of a total of 5,050 subjects,
-are used to construct the pre-training dataset. We do not have tried to perform the
-same pre-training on CBCT data instead of CT because the time required was
+are used to construct the pre-training dataset. We do not have tried to perform
+the same pre-training on CBCT data instead of CT because the time required was
 prohibitive.
 The datasets used are:
 \begin{itemize}
@@ -270,8 +270,8 @@ The datasets used are:
     scans of lung nodules.}
   \item{\textbf{TCIA CT Colonography Trial}: a collection of 825 CT colonography
     scans.}
-  \item{\textbf{TCIA Covid 19}: a set of 2 datasets for a total of 753 CT scans of
-    the chest and annotation about the Covid-19 infection.}
+  \item{\textbf{TCIA Covid 19}: a set of 2 datasets for a total of 753 CT scans
+    of the chest and annotation about the Covid-19 infection.}
   \item{\textbf{TCIA LIDC-IDRI}: a collection obtained by the collaboration of
     seven academic centers and eight medical imaging companies. It contains 1018
     cases of diagnostic and lung cancer screening thoracic computed tomography
@@ -284,19 +284,22 @@ The datasets used are:
   \caption{Pre-training phase}
   \label{fig:pretrain-unetr}
 \end{figure}
-Multiple proxy tasks and formulated with a multi-objective loss function has been used in that self-supervised phase:
+Multiple proxy tasks and formulated with a multi-objective loss function has
+been used in that self-supervised phase:
 \begin{itemize}
   \item{\textbf{Inpainting}: a transposed convolution layer have been attached
     to the encoder as reconstruction head, a patch is removed from the original
     volume and the model must manage to reconstruct the missing voxels, standard
-    L1 loss $\mathcal{L}_{inpaint} = ||\mathcal{X} - \hat{\mathcal{X}}||_1$ is used, where $\hat{\mathcal{X}}$
-    is the output of the model.}
-  \item{\textbf{Image rotation}: The rotation prediction task predicts the angle categories
-  by which the input sub-volume is rotated. For simplicity, we employ $R$ classes
-    of $0$, $90$, $180$, and $270$ rotations along the z-axis. An MLP
-    classification head is used for predicting the softmax probabilities
-    $\hat{y}_r$ of rotation categories. Given the ground truth $y_r$, a
-    cross-entropy loss is used for rotation prediction task: $\mathcal{L}_{rot} = -\sum^R_{r=1}y_r\log(\hat{y}_r)$}
+    L1 loss $$\mathcal{L}_{inpaint} = ||\mathcal{X} - \hat{\mathcal{X}}||_1$$ is
+    used, where $\hat{\mathcal{X}}$ is the output of the model and $\mathcal{X}$
+    is the ground truth.}
+  \item{\textbf{Image rotation}: The rotation prediction task predicts the angle
+    categories by which the input sub-volume is rotated. For simplicity, we
+    employ $R$ classes of $0$, $90$, $180$, and $270$ rotations along the
+    z-axis. An MLP classification head is used for predicting the softmax
+    probabilities $\hat{y}_r$ of rotation categories. Given the ground truth
+    $y_r$, a cross-entropy loss is used for rotation prediction task:
+    $$\mathcal{L}_{rot} = -\sum^R_{r=1}y_r\log(\hat{y}_r)$$}
   \item{\textbf{Contrastive coding}: The rotations used above where also used
     inside a contrastive loss. Given a batch of augmented sub-volumes, the
     contrastive coding allows for a better representation learning by maximizing
@@ -304,19 +307,54 @@ Multiple proxy tasks and formulated with a multi-objective loss function has bee
     negative pairs. A linear layer is attached to the encoder to map each
     augmented sub.volume to a latent representation $v$. The cosing similarity
     is used as the distance measurement. The final loss between a pair $v_i$ and
-    $v_j$ is defined as: $\mathcal{L}_{contra} =
-    -\log{\frac{\exp{(sim(v_i,v_j)/t)}}{\sum_k^{2N}1_{k \neq
-    i}\exp{(sim(v_i,v_k)/t)}}}$, where $t$ is the measurement of normalized
-    temperature scale. $1$ is the indicator function evaluating to $1$ iff $k
-    \neq i$, and $sim$ denotes the dot product between normalized mebeddings.
-    The contrastive learning loss function strengthens the intra-class
-    compactness as well as the inter-class separability}
+    $v_j$ is defined as:
+    $$\mathcal{L}_{contra} = -\log{\frac{\exp{(sim(v_i,v_j)/t)}}{\sum_k^{2N}1_{k
+    \neq i}\exp{(sim(v_i,v_k)/t)}}}$$
+    where $t$ is the measurement of normalized temperature scale. $1$ is the
+    indicator function evaluating to $1 \iff k \neq i$, and $sim(\cdot, \cdot)$
+    denotes the dot product between normalized embeddings.
+    The contrastive learning loss function has been shown to strengthens the
+    intra-class compactness as well as the inter-class separability.}
 \end{itemize}
 
 In conclusion, we minimize the final loss that is the sum of these 3 losses:
 $$
-\mathcal{L} = \lambda_1\mathcal{L}_{inpaint} + \lambda_2\mathcal{L}_{rot} + \lambda_3\mathcal{L}_{contra}
+\mathcal{L} = \lambda_1\mathcal{L}_{inpaint} + \lambda_2\mathcal{L}_{rot} +
+\lambda_3\mathcal{L}_{contra}
 $$
 Where $\lambda_1$, $\lambda_2$ and $\lambda_3$ are the weights of the 3 losses
 and are set to $1$ as experimentally shown to be the optimal value. In the
 Figure \ref{fig:pretrain-unetr} this process is visually represented.
+
+\section{Hann window function}
+By looking at the whole segmented volume, we noticed that when using
+PosPadUNet3D, the segmentation was not very accurate in the borders of each
+patch. In order to solve this problem, we decided to extract overlapping patches
+from the original volume instead of the non-overlapping method used in the
+original paper. When two patches overlap, we would like to compute a weighted
+average based on the distance from the center.
+TODO: explain what happen in audio.
+For this reason, we decided to apply the Hann window function to 3D volumes to reduce edge effects.
+\subsection{Hann window function in 2D}
+In 1-dimensional signals the Hann window function is defined as:
+
+\section{Performance improvements}
+The last attempt made aimed to improve the performance of the model without a
+excessive drop in the metrics. Being that the face of a person is symmetrical,
+we decided to crop each volume in two halves, and flip the right one, then we
+trained the model on both halves separately. Moreover, as the is a considerable
+space between the two halves, we managed to crop a little bit more of data
+leaving the canals intact. We also wanted to be able to feed a single volume
+into the network without having to extract smaller patches from it. To do so, we
+resize the original volume by a factor of $3$.
+
+\section{Results}
+All the models have been trained using PyTorch, on two NVIDIA P100 GPUs with 16
+GB of memory, over the AImagelab server.
+The model proposed by Cipriano et al. achieved the best results among the
+different tries and managed to keep the title of the state-of-the-art model for
+the task of segmentation of the Inferior Alveolar Canal. However, the
+experiments that have been made have obtained comparable metrics thus they might
+open a new path to follow to improve such results.
+
+% A table with 
