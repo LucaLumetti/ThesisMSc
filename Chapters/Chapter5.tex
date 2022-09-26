@@ -334,9 +334,86 @@ from the original volume instead of the non-overlapping method used in the
 original paper. When two patches overlap, we would like to compute a weighted
 average based on the distance from the center.
 TODO: explain what happen in audio.
-For this reason, we decided to apply the Hann window function to 3D volumes to reduce edge effects.
-\subsection{Hann window function in 2D}
-In 1-dimensional signals the Hann window function is defined as:
+For this reason, we decided to apply the Hann window function to 3D volumes to
+try to reduce edge effects.
+\subsection{Hann window function in 1D}
+The Hann window function, named after Julius von Hann, has been fist defined in
+the field of signal processing, thus in 1D, as:
+$$
+w[n] = 0.5(1 - \cos(\frac{2\pi n}{N})), \quad n = 0, \dots, N
+$$
+where $x$ is the index of the window and $N$ is the total number of samples.
+This function is symmetric, with a maximum value of $1$ in the middle of the
+window and a minimum value of $0$ at the edges.
+Another interesting property is that the sum of two Hann windows shifted by $\frac{N}{2}$
+is equal to a rectangular window of width $N$ and height $1$:
+$$
+w[n] + w[n + \frac{N}{2}] = 0.5(1 - \cos(\frac{2\pi n}{N})) + 0.5(1 - \cos(\frac{2\pi n + N}{N} )) = 1
+$$
+\subsection{Hann window function in 3D}
+To apply the Hann window function in 3D, we simply apply the 1D function to each
+dimension of the volume:
+$$
+  w[x, y, z] = w[x]w[y]w[z]
+$$
+
+A cross-section of such window is shown in Figure \ref{fig:hann-window} (equivalent to a 2D window function)
+% a 3x3 grid figure
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    %%%%%%%%%%%%
+    \begin{subfigure}{.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/hann_window_00.jpg}
+    \end{subfigure}
+    %%%%%%%%%%%
+    \begin{subfigure}{.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/hann_window_10.jpg}
+    \end{subfigure}
+    %%%%%%%%%%%
+    \begin{subfigure}{.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/hann_window_20.jpg}
+    \end{subfigure}
+    %%%%%%%%%%%
+    \begin{subfigure}{.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/hann_window_01.jpg}
+    \end{subfigure}
+    %%%%%%%%%%%
+    \begin{subfigure}{.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/hann_window_11.jpg}
+    \end{subfigure}
+    %%%%%%%%%%%
+    \begin{subfigure}{.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/hann_window_21.jpg}
+    \end{subfigure}
+    %%%%%%%%%%%
+    \begin{subfigure}{.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/hann_window_02.jpg}
+    \end{subfigure}
+    %%%%%%%%%%%
+    \begin{subfigure}{.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/hann_window_12.jpg}
+    \end{subfigure}
+    %%%%%%%%%%%
+    \begin{subfigure}{.32\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/hann_window_22.jpg}
+    \end{subfigure}
+  \end{subfigure}
+  %%%%%%%%%%%
+  \caption{Different Hann window functions in 2D based on the position of the extracted patch.}
+  \label{fig:hann-window}
+\end{figure}
+
 
 \section{Performance improvements}
 The last attempt made aimed to improve the performance of the model without a
