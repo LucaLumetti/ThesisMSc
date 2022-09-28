@@ -10,55 +10,66 @@
 
 
 \section{Supervised Learning}
-In the medical image segmentation tasks, supervised learning is the most popular method, where the latest improvements mainly include network backbones, network blocks, and the design of novel loss functions.
+In the medical image segmentation tasks, supervised learning is the most popular
+method, where the latest improvements mainly include network backbones, network
+blocks, and the design of novel loss functions.
 
 \subsection{Backbone networks}
-The encoder-decoder structure is the most popular end-to-end architecture, such as fully convolutional networks (FNC) like U-Net, Deeplab, and SegNet. The encoder part aims to extract high-level features from the input image and project them into a latent space. The decoder part instead restores the extracted features
+The encoder-decoder structure is the most popular end-to-end architecture, such
+as fully convolutional networks (FNC) like U-Net, Deeplab, and SegNet. The
+encoder part aims to extract high-level features from the input image and
+project them into a latent space. The decoder part instead restores the
+extracted features
 from the latent space to the original space size.
 
 \subsubsection{U-Net and V-Net}
-In 2015, Ronneberger et al.
-proposed U-Net which has been widely used for medical image segmentation and
-many variants have been proposed also in recent years. The structure of U-Net
-is symmetrical and the main scope is to fuse low-level features, which medical
-images are usually noisy but show blurred boundaries, with high-level features
-via skip connections.
+In 2015, Ronneberger et al. \cite{ronneberger2015unet} proposed U-Net which has
+been widely used for medical image segmentation and many variants have been
+proposed also in recent years. The structure of U-Net is symmetrical and the
+main scope is to fuse low-level features, which medical images are usually noisy
+but show blurred boundaries, with high-level features via skip connections.
 
 U-Net was designed to deal with 2D images but when dealing with medical images,
-we usually have to handle 3D images. A straightforward solution was to extract 2D
-slices from the original image and fed them to the network and stack the outputs to
-obtain the final 3D output.
+we usually have to handle 3D images. A straightforward solution was to extract
+2D slices from the original image and fed them to the network and stack the
+outputs to obtain the final 3D output.
 The main drawback of this approach is that we lost the spatial information among
 the slices as they are threatened as independent images. Motivated by this idea,
-Çiçek et al. proposed a solution to this problem by using 3D convolutions inside
-U-Net. This network, named 3D U-Net, includes only three down-sampling steps
-because of the high computational cost of 3D Convolutions, leading to less
-effective extraction of deep-layer image features.
-Milletari et al. proposed a similar architecture, named V-Net, which employs more
-skip connections than U-Net to design a deeper network.
-Some Recurrent Neural Network mixed with U-Net has been proposed to model the
-time dependence of image sequences.
+Çiçek et al. \cite{cicek20163dunet} proposed a solution to this problem by using
+3D convolutions inside U-Net. This network, named 3D U-Net, includes only three
+down-sampling steps because of the high computational cost of 3D Convolutions,
+leading to less effective extraction of deep-layer image features.
+Milletari et al. \cite{milletari2016vnet} proposed a similar architecture, named
+V-Net, which employs more skip connections than U-Net to design a deeper
+network. Some Recurrent Neural Network mixed with U-Net has also been proposed
+to model the time dependence of image sequences.
 
 \subsubsection{Recurrent Neural Networks}
-Gao et al. joined LSTM and CNN to model the temporal relationships between
-different brain MRI slices to improve segmentation accuracy. RNN can
-capture local and global spatial features of images by considering the context
-information
-relationship. However, in medical image segmentation, the capture of complete
-and valid temporal information requires good medical image quality (e.g. smaller
-slice thickness and pixel spacing). Therefore, the design of RNN is uncommon for
-improving the performance of medical image segmentation.
+Gao et al. \cite{gao2018lstm} joined LSTM and CNN to model the temporal
+relationships between different brain MRI slices to improve segmentation
+accuracy. RNN can capture local and global spatial features of images by
+considering the context information relationship. However, in medical image
+segmentation, the capture of complete and valid temporal information requires
+good medical image quality (e.g. smaller slice thickness and pixel spacing).
+Therefore, the design of RNN is uncommon for improving the performance of
+medical image segmentation.
 
 \subsubsection{Pseudo-3D Networks}
-As stated before, most medical images are 3D images but using 3D
-convolution requires a lot of computational resources. Therefore some pseudo-3D
-segmentation methods have been proposed. For example, Vu et al. applied the
-overlay of adjacent slices as input to the central slice prediction and then
+As stated before, most medical images are 3D images but using 3D convolution
+requires a lot of computational resources. Therefore some pseudo-3D segmentation
+methods have been proposed. For example, Vu et al. \cite{vu2020pseudo3d} applied
+the overlay of adjacent slices as input to the central slice prediction and then
 fed the obtained 2D feature map into a standard 2D network.
 
 \subsubsection{Generative Adversarial Networks}
 \label{subsubsec:gan}
-Another type of network that has been exploited in medical image segmentation is GAN, mostly for data augmentation by generating new samples. Pollastri et al. remodeled two different well-known GANs, Deep Convolutional GAN, and a Laplacian GAN, to generate both skin lesion images and their segmentation masks, making the augmentation process extremely straightforward.
+Another type of networks that has been exploited in medical image segmentation
+are Generative Adversarial Networks (GANs) \cite{goodfellow2020gan}, mostly used
+in data augmentation by generating new samples. Pollastri et al.
+\cite{pollastri2020gan} remodeled two different well-known GANs, Deep
+Convolutional GAN, and a Laplacian GAN, to generate both skin lesion images and
+their segmentation masks, making the augmentation process extremely
+straightforward.
 In addition, the incorporation of prior knowledge about
 organ shape and position may be crucial for improving the medical
 image segmentation effect, where images are corrupted and

@@ -19,20 +19,20 @@ been discarded. As we were dealing with highly unbalanced data, less than 1\% of
 the whole volume is the canal, we looked for alternative losses which deal with
 this problem.
 
-Kervadec et al. proposed a loss function that takes the form of a distance
-metric on the space of contours instead of regions. Dice or cross-entropy, are
-based on regional integrals, which are convenient for training deep neural
-networks. In practice, these regional integrals are summations over the
-segmentation regions of differentiable functions, each directly invoking the
-softmax probability outputs of the network. Therefore, standard stochastic
-optimizers such as SGD are directly applicable. Unfortunately, difficulties
-occur for highly unbalanced segmentations, for instance, when the size of the
-target foreground region is several orders of magnitude less than the background
-size, which is a common characteristic for medical images. The problem with such
-losses is that they assume identical importance distribution for all the samples
-and classes.
+Kervadec et al. \cite{kervadec2019boundary} proposed a loss function that takes
+the form of a distance metric on the space of contours instead of regions. Dice
+or cross-entropy, are based on regional integrals, which are convenient for
+training deep neural networks. In practice, these regional integrals are
+summations over the segmentation regions of differentiable functions, each
+directly invoking the softmax probability outputs of the network. Therefore,
+standard stochastic optimizers such as SGD are directly applicable.
+Unfortunately, difficulties occur for highly unbalanced segmentations, for
+instance, when the size of the target foreground region is several orders of
+magnitude less than the background size, which is a common characteristic for
+medical images. The problem with such losses is that they assume identical
+importance distribution for all the samples and classes.
 
-In the proposed paper, the authors proposed a new type of loss, named
+In the aforementioned paper, the authors proposed a new type of loss, named
 \emph{Boundary loss} that aims to mitigate the issues related to regional losses
 in highly unbalanced segmentation problems. Rather than using unbalanced
 integrals over the regions, a boundary loss uses integrals over the boundary
@@ -347,17 +347,25 @@ This function is symmetric, with a maximum value of $1$ in the middle of the
 window and a minimum value of $0$ at the edges.
 Another interesting property is that the sum of two Hann windows shifted by $\frac{N}{2}$
 is equal to a rectangular window of width $N$ and height $1$:
-$$
-w[n] + w[n + \frac{N}{2}] = 0.5(1 - \cos(\frac{2\pi n}{N})) + 0.5(1 - \cos(\frac{2\pi n + N}{N} )) = 1
-$$
+\begin{equation}
+  \label{eq:hannisone}
+  w[n] + w[n + N] = 0.5(1 - \cos(\frac{2\pi n}{N})) + 0.5(1 - \cos(\frac{2\pi (n + N)}{N} )) = 1
+\end{equation}
 \subsection{Hann window function in 3D}
 To apply the Hann window function in 3D, we simply apply the 1D function to each
 dimension of the volume:
-$$
+\begin{equation}
   w[x, y, z] = w[x]w[y]w[z]
-$$
+\end{equation}
+but we have to handle the case where the patch is close to the border of the
+original volume. Here the patch is overlapped only on a part of the volume, thus
+the window function must be adapted accordingly. In the 3D case, $27$ different
+cases can occur, depending on the position of the patch in the original volume.
+In Figure \ref{fig:hann-window} all the $9$ cases in the 2D scenario are shown.
+Mathematically, this would require to define many different functions and being
+unable to efficiently implement in Python the $N$-dimensional case, with $N$ as
+a parameter.
 
-A cross-section of such window is shown in Figure \ref{fig:hann-window} (equivalent to a 2D window function)
 % a 3x3 grid figure
 \begin{figure}
   \centering
@@ -414,16 +422,82 @@ A cross-section of such window is shown in Figure \ref{fig:hann-window} (equival
   \label{fig:hann-window}
 \end{figure}
 
+\subsection{Implementation}
+The first step is to generate a $N$-dim Hann window, by starting from a $1$-dim
+window. Here we use the method provided in the PyTorch library \texttt{torch.hann\_window()}.
+To produce a $2$-dim window, is possible to exploit the broadcast property of
+tensors by multiplying a $1$-dim window with shape $(N,1)$
+with a $1$-dim window with shape $(1,N)$, resulting in a $2$-dim window with
+shape $(N,N)$. This process can be repeated to generate up to a $N$-dim window.
+The code is shown in Listing \ref{alg:hann-window}. %Listing with title
+\begin{lstlisting}[language=Python, caption=Python code to generate a $N$-dim Hann window, label=alg:hann-window]
+def _get_hann_window(patch_size):
+  hann_window_nd = torch.as_tensor([1])
+  # create a n-dim hann window
+  for spatial_dim, size in enumerate(patch_size):
+    window_shape = np.ones_like(patch_size)
+    window_shape[spatial_dim] = size
+    hann_window_1d = torch.hann_window(
+      size + 2,
+      periodic=False,
+    )
+    hann_window_1d = hann_window_1d[1:-1].view(*window_shape)
+    hann_window_nd = hann_window_nd * hann_window_1d
+  return hann_window_nd
+\end{lstlisting}
+
+Once a $N$-dim Hann window is generated, the next step is to apply it to the
+predicted segmnetation and, to avoid small numerical errors, we save the
+coefficients used in a tensor of the same shape of the segmentation. These
+numerical errors are due to the fact that these Hann windows are discrete and
+not continuous, thus the sum of the window coefficients is not always equal to
+$1$. Moreover this approach to avoid us to craft a specific window tensor for each
+case near the border, which would become impratical for high dimensional cases.
+The code is shown in Listing \ref{alg:apply-hann-window}.
+\begin{lstlisting}[language=Python, caption=Code to apply Hann window to a batch of patches given their locations, label=alg:apply-hann-window]
+hann_window = _get_hann_window(patch_size)
+for patch, location in zip(batch, locations):
+  i_ini, j_ini, k_ini, i_fin, j_fin, k_fin = location
+
+  patch = patch * _hann_window
+  _output_tensor[
+      :,
+      i_ini:i_fin,
+      j_ini:j_fin,
+      k_ini:k_fin,
+  ] += patch
+  _avgmask_tensor[
+      :,
+      i_ini:i_fin,
+      j_ini:j_fin,
+      k_ini:k_fin,
+  ] += _hann_window
+\end{lstlisting}
+
+Once the segmentation for the whole volume is computed, the final step is to
+divide the output tensor by the average mask tensor, to obtain the final
+segmentation. The code is shown in Listing \ref{alg:final-segmentation}.
+
+\begin{lstlisting}[language=Python, caption=Code to compute the final segmentation, label=alg:final-segmentation]
+_output_tensor = _output_tensor / _avgmask_tensor
+\end{lstlisting}
+
+This method has been successfully implemented to TorchIO library and is avaible
+since version $0.18.83$. The code is available at
+\url{https://github.com/fepegar/torchio/blob/main/src/torchio/data/inference/aggregator.py}.
 
 \section{Performance improvements}
 The last attempt made aimed to improve the performance of the model without a
 excessive drop in the metrics. Being that the face of a person is symmetrical,
 we decided to crop each volume in two halves, and flip the right one, then we
-trained the model on both halves separately. Moreover, as the is a considerable
+trained the model on both halves separately. Moreover, as there is a considerable
 space between the two halves, we managed to crop a little bit more of data
-leaving the canals intact. We also wanted to be able to feed a single volume
+while leaving the canals still intact. We also wanted to be able to feed a single volume
 into the network without having to extract smaller patches from it. To do so, we
-resize the original volume by a factor of $3$.
+resize the original volume by a factor of $3$. Once a resized volume is fed in
+the network, we could resize them back to the original size and compute the
+metrics as usual. With this approach, we managed to gain a speedup of $24$ times,
+while the DICE score was only slightly affected by a drop of $0.02$.
 
 \section{Results}
 All the models have been trained using PyTorch, on two NVIDIA P100 GPUs with 16
