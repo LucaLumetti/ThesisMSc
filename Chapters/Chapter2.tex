@@ -70,40 +70,52 @@ in data augmentation by generating new samples. Pollastri et al.
 Convolutional GAN, and a Laplacian GAN, to generate both skin lesion images and
 their segmentation masks, making the augmentation process extremely
 straightforward.
-In addition, the incorporation of prior knowledge about
-organ shape and position may be crucial for improving the medical
-image segmentation effect, where images are corrupted and
-thus contain artifacts due to limitations of imaging techniques.
-However, there are few works about how to incorporate prior
-knowledge into CNN models. As one of the earliest studies in this field, Oktay et al. proposed a novel and general
-method to combine a priori knowledge of shape and label
-structure into the anatomically constrained neural networks
-(ACNN) for medical image analysis tasks. In this way, the neural network training process can be constrained and guided to
-make more anatomical and meaningful predictions, especially
-in cases where input image data is not sufficiently informative or consistent enough (e.g., missing object boundaries).\\
+In addition, the incorporation of prior knowledge about organ shape and position
+may be crucial for improving the medical image segmentation effect, where images
+are corrupted and thus contain artifacts due to limitations of imaging
+techniques. However, there are few works about how to incorporate prior
+knowledge into CNN models. As one of the earliest studies in this field, Oktay
+et al. \cite{oktay2017acnn} proposed a novel and general method to combine a
+priori knowledge of shape and label structure into the anatomically constrained
+neural networks (ACNN) for medical image analysis tasks. In this way, the neural
+network training process can be constrained and guided to make more anatomical
+and meaningful predictions, especially in cases where input image data is not
+sufficiently informative or consistent enough (e.g., missing object
+boundaries).\\
 
-After proposing U-Net, the encoder-decoder structure
-became the most popular structure in medical image segmentation. The design of the network backbone focuses on more
-efficient feature extraction in the encoder and feature recovery
-and fusion in the decoder to improve segmentation accuracy.
+After proposing U-Net in \cite{ronneberger2015unet}, the encoder-decoder
+structure became the most popular structure in medical image segmentation. The
+design of the network backbone focuses on more efficient feature extraction in
+the encoder and feature recovery and fusion in the decoder to improve
+segmentation accuracy.
 
 \subsection{Network Function Block}
 \subsubsection{Dense connection}
 Dense connection is the most popular network block in medical image
-segmentation, used to construct a kind of special convolution neural network. The
-input of each layer comes from the output of all previous layers in the process of forwarding transmission. Inspired by this design, Guan et al. proposed an
-improved U-Net by replacing each sub-block of the network with a form of dense
-connection. Although the dense connection helps obtain richer image
-features, it often reduces the robustness of feature representation to a certain
-extent and increases the number of parameters.
+segmentation, used to construct a kind of special convolution neural network.
+The input of each layer comes from the output of all previous layers in the
+process of forwarding transmission. Inspired by this design, Guan et al.
+\cite{guan2019fully} proposed an improved U-Net by replacing each sub-block of
+the network with a form of dense connection. Although the dense connection helps
+obtain richer image features, it often reduces the robustness of feature
+representation to a certain extent and increases the number of parameters.
 
 \subsubsection{Inception block}
-For CNNs, deep networks often give better performances than shallow ones, but they encounter some new problems such as vanishing gradient, high memory usage, and slow convergence. The inception structure used in GoogleNet overcomes these problems, and for this reason, it has been also used over medical images. Gu et al. proposed CE-Net by introducing the inception structure and atrous convolution to each parallel structure to extract features on a wide reception field. Such complex structure however leads to a difficult model modification.
+For CNNs, deep networks often give better performances than shallow ones, but
+they encounter some new problems such as vanishing gradient, high memory usage,
+and slow convergence. The inception structure used in GoogleNet
+\cite{szegedy2015googlenet,szegedy2016rethinking} overcomes these problems, and
+for this reason, it has been also used over medical images. Gu et al.
+\cite{guan2019fully} proposed CE-Net by introducing the inception structure
+and atrous convolution to each parallel structure to extract features on a
+wide reception field. Such complex structure however leads to a difficult
+model modification.
 
 \subsubsection{Depth separability}
 To reduce the computational cost of 3D convolutions and their memory usage,
-Howard et al. proposed MobileNet to decompose vanilla convolutions into
-depthwise separable convolution and pointwise convolution.
+Howard et al. \cite{howard2017mobilenets} proposed MobileNet to decompose
+vanilla convolutions into depthwise separable convolution and pointwise
+convolution.
 % TODO: aggiungere calcolo del numero di calcoli fatti tra le 3D e le depth
 % separable
 
@@ -111,33 +123,33 @@ depthwise separable convolution and pointwise convolution.
 \par
 Attention block can selectively change input or assigns different weights to
 input variables according to different importance.\\
-\emph{Spatial Attention} block aims
-to calculate the feature importance of each pixel in the space domain and extract
-the key information of an image. Oktay et al. proposed attention U-Net, where
-attention blocks were used to change the output of the encoder before fusing
-features from the encoder and the corresponding decoder. The attention block
-outputs a gating signal to control the feature importance of pixels at different
-spatial positions.\\
-Another type of attention block is the \emph{Channel attention},
-which utilizes learned global information to emphasize selectively useful
-features and suppress useless features. Hu et al. proposed SE-Net
-introducing the channel attention to the field of image analysis and winning the
-ImageNet Challenge in 2017.\\
+\emph{Spatial Attention} block aims to calculate the feature importance of each
+pixel in the space domain and extract the key information of an image. Oktay et
+al. \cite{oktay2018attentionunet} proposed attention U-Net, where attention
+blocks were used to change the output of the encoder before fusing features from
+the encoder and the corresponding decoder.
+The attention block outputs a gating signal to control the feature importance of
+pixels at different spatial positions.\\
+Another type of attention block is the \emph{Channel attention}, which utilizes
+learned global information to emphasize selectively useful features and suppress
+useless features. Hu et al. \cite{hu2018squeeze} proposed SE-Net introducing the
+channel attention to the field of image analysis and winning the ImageNet
+Challenge in 2017.\\
 Spatial and channel attention mechanisms are the two most popular strategies for
 improving feature representation. However, spatial attention ignores the
-difference between different channel information and treats each channel equally. On
-the contrary, channel attention pools global information directly while
-ignoring local information in each channel, which is a relatively rough
-operation. Therefore, combining the advantages of two attention mechanisms,
-researchers have designed many models based on a \emph{mixed domain attention block}.
+difference between different channel information and treats each channel
+equally. On the contrary, channel attention pools global information directly
+while ignoring local information in each channel, which is a relatively rough
+  operation. Therefore, combining the advantages of two attention mechanisms,
+  researchers have designed many models based on a \emph{mixed domain attention
+  block}.
 
 \subsection{Loss functions}
-In addition to improved segmentation speed and accuracy
-by designing the network backbone and the function block, designing new loss
-functions also resulted in improvements in subsequent inference-time
-segmentation accuracy. Therefore,
-a great deal of work has been reported on the design of
-suitable loss functions for medical image segmentation tasks.
+In addition to improved segmentation speed and accuracy by designing the network
+backbone and the function block, designing new loss functions also resulted in
+improvements in subsequent inference-time segmentation accuracy. Therefore, a
+great deal of work has been reported on the design of suitable loss functions
+for medical image segmentation tasks.
 
 \subsubsection{Cross Entropy}
 The cross-entropy loss has been the most popular loss function. It compares
@@ -152,7 +164,7 @@ and $C$ is the number of categories. The cross-entropy loss is easy to
 implement and has been widely used in medical image segmentation tasks. However,
 it is not suitable for segmentation tasks with imbalanced data, because it does
 not consider the class imbalance problem. Therefore, a \emph{weighted cross
-entropy loss} and \emph{balanced cross entropy} have been proposed to solve this
+entropy loss} \cite{long2015fully} and \emph{balanced cross entropy} have been proposed to solve this
 problem, where a $\beta$ hyperparameters are added to the loss function to adjust
 the weight of each class.
 
@@ -164,20 +176,23 @@ $$
 DSC = \frac{2 \times |A \cap B|}{|A| + |B|}
 $$
 where $A$ and $B$ are the segmentation result and the ground truth,
-respectively. The \emph{Dice Loss} is then formulated as follows:
+respectively. The \emph{Dice Loss}, for the first time proposed in the V-Net
+paper \cite{milletari2016vnet}, is formulated as a continuous relaxation of the
+Dice coefficient:
 $$
 L_{DSC} = 1 - \frac{2 \times y \times \hat{y} + 1}{y + \hat{y} + 1}
 $$
-Here 1 is added to the denominator to avoid the division by zero in the edge
+Here $1$ is added to the denominator to avoid the division by zero in the edge
 case when both $y$ and $\hat{y}$ are zero. The Dice loss is a good choice even
 for uneven samples, however, it easily influences the backpropagation and leads
-  to a training difficulty.
+to a training difficulty.
 
 \subsubsection{Generalized Dice Loss}
 Although Dice Loss can solve the problem of class imbalance to a certain extent,
 it does not work for serious class imbalance. To solve this problem, researchers
-have proposed a \emph{Generalized Dice Loss} that can be used for both binary
-and multi-class segmentation tasks. The generalized Dice loss is defined as:
+have proposed a \emph{Generalized Dice Loss} \cite{sudre2017generalised} that
+can be used for both binary and multi-class segmentation tasks. The generalized
+Dice loss is defined as:
 $$
 L_{GDSC} = 1 - \frac{1}{m}\frac{2\sum_{j=1}^{m} \omega_j
 \sum_{i=1}^{n}y_{ij}\hat{y}_{ij}}{\sum_{j=1}^{m}\omega_j\sum_{i=1}^{n}(y_{ij} +
@@ -187,10 +202,11 @@ where the weight $\omega_j$ is used to adjust the weight of each class, and $\om
 
 \subsubsection{Boundary Loss}
 Another approach that solves the problem of class imbalance has been proposed by
-Kervadec et al. for the task of brain lesion segmentation. They proposed a Boundary Loss which aims to minimize the distance between segmented boundaries
-and labeled boundaries. Results show that the combination of the Dice loss and
-the boundary loss is superior to the single ones. The composite loss is defined
-as:
+Kervadec et al. \cite{kervadec2019boundary} for the task of brain lesion
+segmentation. They proposed a Boundary Loss which aims to minimize the distance
+between segmentedboundaries and labeled boundaries. Results show that the
+combination of the Dice loss and the boundary loss is superior to the single
+ones. The composite loss is defined as:
 $$
 L = \alpha L_{DSC} + (1 - \alpha) L_{B}
 $$
@@ -203,10 +219,11 @@ where $\phi(y)$ is the signed distance function applied to the real segmentation
 \par
 For medical image segmentation, the improvement of loss mainly focuses on the
 problem of segmentation of small objects in a large background (the problem of
-class imbalance). Chen et al. proposed a new loss function by applying
-traditional active contour energy minimization to convolutional neural networks,
-Li et al. proposed a new regularization term to improve the cross-entropy loss
-function, and Karimi et al. proposed a loss function based on Hausdorff
+class imbalance). Chen et al. \cite{kervadec2019boundary} proposed a new loss
+function by applying traditional active contour energy minimization to
+convolutional neural networks, Li et al. \cite{li2020transformation} proposed a
+new regularization term to improve the cross-entropy loss function, and Karimi
+et al. \cite{karimi2019reducing} proposed a loss function based on Hausdorff
 distance (HD). Besides, there is still a lot of work trying to deal with this
 problem by adding penalties to lose functions or changing the optimization
 strategy according to specific tasks.\\
@@ -219,24 +236,44 @@ functions is highly task-specific, so we need to analyze carefully task
 requirements, and then design reasonable and available loss functions.
 
 \section{Weakly Supervised and Unsupervised Segmentation}
-Although convolutional neural networks show goods performances for medical
-image segmentation, results seriously depend on high-quality
-labels. It is rare to build many datasets with many high-quality labels,
-especially in the field of medical image analysis, since data acquisition and
-labeling often incur high costs. Therefore, a lot of studies on incomplete or
-imperfect datasets are reported. Unsupervised learning is a very important approach that improves the performance of medical image segmentation. In this
-section, we will introduce weakly supervised learning, a method that makes
-use of unsupervised learning for unlabelled data in combination with supervised
-learning with labeled data.
+Although convolutional neural networks show goods performances for medical image
+segmentation, results seriously depend on high-quality labels. It is rare to
+build many datasets with many high-quality labels, especially in the field of
+medical image analysis, since data acquisition and labeling often incur high
+costs. Therefore, a lot of studies on incomplete or imperfect datasets are
+reported. Unsupervised learning is a very important approach that improves the
+performance of medical image segmentation. In this section, we will introduce
+weakly supervised learning, a method that makes use of unsupervised learning for
+unlabelled data in combination with supervised learning with labeled data.
 
 \subsection{Data Augmentation}
-Performing data augmentation is mandatory in absence of a largely labeled dataset, and is still considered good practice even when we have enough data. However, new data generated with this method produce images that are highly correlated with the original images.
+Performing data augmentation is mandatory in absence of a largely labeled
+dataset, and is still considered good practice even when we have enough data.
+However, new data generated with this method produce images that are highly
+correlated with the original images.
 
 \subsubsection{Traditional methods}
-With traditional methods, we refer to all the computer vision techniques such as adding/removing noise, changing brightness, saturation, contrast, colors, and changing the image layout with rotations, distortion, scaling, etc. These techniques are still very used today, usually combining them together with random parameters. Some of these algorithms may require a non-negligible computational cost thus usually performed before the training procedure.
+With traditional methods, we refer to all the computer vision techniques such as
+adding/removing noise, changing brightness, saturation, contrast, colors, and
+changing the image layout with rotations, distortion, scaling, etc. These
+techniques are still very used today, usually combining them together with
+random parameters. Some of these algorithms may require a non-negligible
+computational cost thus usually performed before the training procedure.
 
 \subsubsection{Conditional Generative Adversarial Networks}
-As already described in Section \ref{subsubsec:gan}, GAN and its variants have been widely for data augmentation. In particular, cGANs are often used in combination with standard GANs to generate labels relative to a given synthetic image.
+As already described in Section \ref{subsubsec:gan}, GAN and its variants have
+been widely for data augmentation. In particular, cGANs are often used in
+combination with standard GANs to generate labels relative to a given synthetic
+image.
+
+\subsection{Sparse Labels}
+Cipriano et al. \cite{cipriano2022improving} recently proposed a pre-training
+approach based on sparse labels. This type of labels are way easier to obtain
+but is not as accurate as the real dense labels. They fed these labels to the
+network together with the input image for a given number of steps, then used the
+learned parameters to produce dense labels for a set of images that had only the
+sparse labels. The authors showed that this approach can be used to improve the
+performance of the final network.
 
 \subsection{Transfer Learning}
 Pre-trained model parameters are often used to initialize a new model,
@@ -247,121 +284,122 @@ useful as it improves the accuracy of segmentations. However, domain
 adaptation may be a problem when applying models trained over natural images to
 medical image analysis tasks. Moreover, these methods are hardly applicable to
 3D medical image analysis because such pre-trained models rely on 2D datasets.\\
-Hatamizadeh et al. recently proposed an unsupervised approach to pre-train a
-given model by relying only on unannotated medical images of the same domain of
-the main tasks. In practice, the network is trained to perform a variety of tasks
-such as image reconstruction, classification of the rotation applied to the
-original image, etc. which can be performed in an unsupervised manner. Later,
-these tasks heads of the network are detached and the training on the main task
-is performed. Such pretraining aims to train the network to learn how to extract
-high-level features from a specific type of medical images, such as CT or MRI.\\
-Also, Cipriano et al. recently proposed a pre-training approach based on sparse labels.
-This type of labels are way easier to obtain but is not as accurate as the real dense labels. They fed these labels to the network together with the input
-image for a given number of steps, then used the learned parameters to train the
-network to produce the segmentation by relying only on the input, without the
-sparse labels.
-
+Tang et al. \cite{tang2022self} recently proposed an unsupervised approach to
+pre-train a given model by relying only on unannotated medical images of the
+same domain of the main tasks. In practice, the network is trained to perform a
+variety of tasks such as image reconstruction, classification of the rotation
+applied to the original image, etc. which can be performed in an unsupervised
+manner. Later, these tasks heads of the network are detached and the training on
+the main task is performed. Such pretraining aims to train the network to learn
+how to extract high-level features from a specific type of medical images, such
+as CT or MRI.
 
 \section{Current direction of research}
 Until now we described the most popular network structures and loss functions
 for medical image segmentation tasks that were proposed and used up to date.
-Since the rise in the popularity of vision transformers and graph neural networks,
-some novelty architectures are being proposed in medical imaging. Results
-obtained are still not as good as those obtained with traditional architectures,
-aside from some really specific tasks or datasets, but they are still interesting and
-promising.\\
+Since the rise in the popularity of vision transformers and graph neural
+networks, some novelty architectures are being proposed in medical imaging.
+Results obtained are still not as good as those obtained with traditional
+architectures, aside from some really specific tasks or datasets, but they are
+still interesting and promising.
 
 \subsection{Network Architecture Search}
 The design process of network architecture is a very time-consuming task, and
 it is often difficult to find the best architecture for a given task. Therefore,
 many researchers have proposed methods to automate the design of network
-architectures. Such methods, named NAS (Network Architecture Search), focus on
-the \emph{search space}, \emph{search strategy}, and \emph{performance
-estimation}.
-The search space is a candidate collection of network structures to be searched.
-The search space is divided into a global search space that represents the
-search for the entire network structure, and a cell-based search space that
-searches only a few small structures that are assembled into a complete large network by the ways of stacking and stitching. The search strategy aims to find
-the optimal network structure as fast as possible in search spaces. Popular
-search strategies are often grouped into three categories, reinforcement-based
-learning, evolutionary algorithms, and gradients. The performance estimation
-strategy is the process of assessing how well the network structure performs on
-target datasets. For NAS techniques, researchers pay more attention to the
-improvement of search strategies since search space and performance estimation
-methods are usually rarely changed.\\
-Isensee et al. argued that too much manual adjustment on network structure could
-lead to over-fitting for a given dataset, and therefore proposed a medical image
-segmentation framework no-newUNet (nnU-Net) that adapts itself to any new
-dataset. The nnUNet automatically adjusts all hyperparameters according to the
-properties of the given dataset without manual intervention. Therefore, the
-nnU-Net only relies on vanilla 2D UNet, 3D UNet, UNet cascade, and a robust
-training scheme. It focuses on the stage of pre-processing (resampling and
-normalization), training (loss, optimizer settings, data augmentation),
-inference (patch-based strategies, test-time-augmentations integration, model
-integration, etc.), and post-processing (e.g., enhanced single pass domain). In
-practical applications, the improvements in network structure design usually
-depend on experiences without adequate interpretability theory support,
-Moreover, more complex network models indicate a higher risk of over-fitting.
-
+architectures. Such methods, named NAS (Network Architecture Search)
+\cite{elsken2019nassurvery}, focus on the \emph{search space}, \emph{search
+strategy}, and \emph{performance estimation}.
+The search space is a candidate collection of network structures to be searched
+and it is divided into a global search space that represents the search for the
+entire network structure, and a cell-based search space that searches only a few
+small structures that are assembled into a complete large network by the ways of
+stacking and stitching. The search strategy aims to find the optimal network
+structure as fast as possible in search spaces. Popular search strategies are
+often grouped into three categories, reinforcement-based learning, evolutionary
+algorithms, and gradients. The performance estimation strategy is the process of
+assessing how well the network structure performs on target datasets. For NAS
+techniques, researchers pay more attention to the improvement of search
+strategies since search space and performance estimation methods are usually
+rarely changed.\\
+Isensee et al. \cite{isensee2018nnu} argued that too much manual adjustment on
+network structure could lead to over-fitting for a given dataset, and therefore
+proposed a medical image segmentation framework no-newUNet (nnU-Net) that adapts
+itself to any new dataset. The nnUNet automatically adjusts all hyperparameters
+according to the properties of the given dataset without manual intervention.
+Therefore, the nnU-Net only relies on vanilla 2D UNet, 3D UNet, UNet cascade,
+and a robust training scheme. It focuses on the stage of pre-processing
+(resampling and normalization), training (loss, optimizer settings, data
+augmentation), inference (patch-based strategies, test-time-augmentations
+integration, model integration, etc.), and post-processing (e.g., enhanced
+single pass domain). In practical applications, the improvements in network
+structure design usually depend on experiences without adequate interpretability
+theory support, Moreover, more complex network models indicate a higher risk of
+over-fitting.
 
 \subsection{Graph Convolutional Neural Network}
 Graph Convolutional Neural Network (GCN) is a type of neural network that
-utilizes graph structure to process data. In practice, the Euclidean space of the
-image can be converted into graphs that can be modeled using GCN.
+utilizes graph structure to process data. In practice, the Euclidean space of
+the image can be converted into graphs that can be modeled using GCN.
 
-Gao et al. designed a new graph pooling (gPool) and graph unpooling (gUnpool)
-operation based on GCN and proposed an encoder-decoder model namely graph U-Net.
-The graph U-Net achieves better performance than popular UNets by adding a small
-number of parameters. In contrast to traditional convolutional neural networks
-where deeper is better, the performance of the graph U-Net cannot be improved by
-increasing the depth of networks when the value of depth exceeds 4. However, the
-graph U-Net shows a stronger capability of feature encoding than popular U-Nets
-when the value of depth is smaller or equivalent to 4.
+Gao et al. \cite{gao2019graph} designed a new graph pooling (gPool) and graph
+unpooling (gUnpool) operation based on GCN and proposed an encoder-decoder model
+namely graph U-Net. The graph U-Net achieves better performance than popular
+UNets by adding a small number of parameters. In contrast to traditional
+convolutional neural networks where deeper is better, the performance of the
+graph U-Net cannot be improved by increasing the depth of networks when the
+value of depth exceeds $4$. However, the graph U-Net shows a stronger capability
+of feature encoding than popular U-Nets when the value of depth is smaller or
+equivalent to $4$.
 
-Yang et al. proposed the end-to-end conditional partial residual plot
-convolutional network CPR-GCN for automatic anatomical marking of coronary
-arteries. Authors showed that the GCN-based approach provided better performance
-and stronger robustness than traditional and recent depth learning-based
-approaches. Results from these GCNs in medical image segmentations are
-promising, as the graph structure has high data representation efficiency and
-a strong capability of feature encoding.
+Yang et al. \cite{yang2020cpr} proposed the end-to-end conditional partial
+residual plot convolutional network CPR-GCN for automatic anatomical marking of
+coronary arteries. Authors showed that the GCN-based approach provided better
+performance and stronger robustness than traditional and recent depth
+learning-based approaches. Results from these GCNs in medical image
+segmentations are promising, as the graph structure has high data representation
+efficiency and a strong capability of feature encoding.
 
 \subsection{Interpretable Shape Attentive Neural Network}
 Currently, many deep learning algorithms tend to make judgments by using
 "memorized`` models that approximately fit input data. As a result, these
 algorithms cannot be explained sufficiently and give convincing evidence for
 each specific prediction. Therefore, the study of the interpretability of deep
-neural networks is a hot topic at present. Sun et al. proposed the SAU-Net which
-focuses on the interpretability and robustness of models. The proposed
-architecture attempts to address the problem of poor edge segmentation accuracy
-in medical images by using a secondary shape stream. Especially, the shape stream
-and the regular texture stream can capture rich shape-dependent information in
-parallel. Furthermore, both spatial and channel attention mechanisms are used for
-the decoder to explain the learning capability of models at each resolution of
+neural networks is a hot topic at present
+Sun et al. \cite{sun2020saunet} proposed the SAU-Net which focuses on the
+interpretability and robustness of models. The proposed architecture attempts to
+address the problem of poor edge segmentation accuracy in medical images by
+using a secondary shape stream. Especially, the shape stream and the regular
+texture stream can capture rich shape-dependent information in parallel.
+Furthermore, both spatial and channel attention mechanisms are used for the
+decoder to explain the learning capability of models at each resolution of
 U-Net. Finally, by extracting the learned shape and spatial attention maps, we
 can interpret the highly activated regions of each decoder block. The learned
-shape maps can be used to infer the correct shapes of interesting categories learned
-by the model. The SAU-Net can learn robust shape features of objects via
+shape maps can be used to infer the correct shapes of interesting categories
+learned by the model. The SAU-Net can learn robust shape features of objects via
 the gated shape stream and is also more interpretable than previous works via
 built-in saliency maps using attention.
 
 \subsection{Vision Transformer}
-Recently, transformer-based architectures have become very popular and replaced the convolutional operator and use self-attention modules to compose entire
-encoderdecoder structures that can encode long-range dependencies.
-It has been a great success in the field of natural language processing.
-Dosovitskiy et al. proposed Vision Transformer (ViT) that can classify
-images directly using the Transformer.
-Recently, a large number of researchers have applied the transformer to medical
-image segmentation. CNNs have a comparative advantage in extracting the
-underlying features. These low-level features form the key points, lines, and
-some basic image structures at the patch level. However, when we detect these
-basic visual elements, the higher-level visual semantic information is often
-more concerned with how these elements relate to each other to form an object,
-and how the spatial location of objects relates to each other to form the scene.
-At present, the transformer is more natural and effective in dealing with the
-relationships between these elements. However, if all the convolutional
-operators in CV tasks are replaced by Transformer, it may suffer from many
-problems, such as high computational cost and memory usage. From existing research, the combination of Transformer and CNNs may lead to better results.
-Recently, Chen et al. proposed a U-Net shaped network, where the encoder was
-made of ViT only while the decoder was fully convolutional.
+Recently, transformer-based architectures have become very popular and replaced
+the convolutional operator and use self-attention modules to compose entire
+encoderdecoder structures that can encode long-range dependencies. It has been a
+great success in the field of natural language processing.
+Dosovitskiy et al. \cite{dosovitskiy2020image} proposed Vision Transformer (ViT)
+that can classify images directly using the Transformer. Recently, a large
+number of researchers have applied the transformer to medical image
+segmentation. CNNs have a comparative advantage in extracting the underlying
+features. These low-level features form the key points, lines, and some basic
+image structures at the patch level. However, when we detect these basic visual
+elements, the higher-level visual semantic information is often more concerned
+with how these elements relate to each other to form an object, and how the
+spatial location of objects relates to each other to form the scene. At present,
+the transformer is more natural and effective in dealing with the relationships
+between these elements. However, if all the convolutional operators in computer
+vision tasks are replaced by Transformer, it may suffer from many problems, such
+as high computational cost and memory usage. From existing research, the
+combination of Transformer and CNNs may lead to better results.
+Recently, Chen et al. \cite{chen2021transunet} proposed a U-Net shaped network,
+where the encoder was made of ViT only while the decoder was fully
+convolutional.
 
