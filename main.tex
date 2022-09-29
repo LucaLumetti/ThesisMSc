@@ -279,7 +279,58 @@ ottenuti, si rimanda al testo in inglese.
 
 Questa tesi tratta della segmentazione del canale alveolare inferiore su
 immagini di tomografia conica a fascio di coni (Cone Beam Computed Tomography,
-CBCT) tramite l'utilizzo di reti neurali.\\
+CBCT) tramite l'utilizzo di reti neurali. Tale procedura è essenziale per
+l'inserimento di impianti dentali nella mascella, poichè il nervo alveolare
+inferiore deve essere accuratamente delineato prima di poter eseguire l'operazione
+voluta, in quanto danneggiare tale nervo potrebbe essere causa di gravi
+conseguenze per il paziente, come ad esempio la perdita della sensibilità o la
+paralisi di tale zona.\\
+La segmentazione di immagini è un problema di grande interesse in ambito della
+visione artificiale, in quanto permette di ottenere informazioni utili per
+diversi scopi. In ambito medico, la segmentazione di immagini risulta uno
+strumento molto utile a supporto dei medici. Per questo motivo c'è stata una
+forte ricerca sulla segmentazione di immagini mediche (CT, CBCT, MRI, ecc.), che
+ha seguito i trend della visione artificiale "classica". Ad oggi, quest'area è
+dominata dalle reti neurali, che hanno dimostrato di poter ottenere risultati
+molto migliori delle tecniche classiche. Negli ultimi anni, la tipologia di reti
+neurali che ha avuto maggior successo è stata quella delle reti neurali
+completamente convolutive (CNN), ovvero reti neurali che non hanno alcun layer
+completamente connesso ma solo layer convoluzionali. Tra queste, si è visto che
+le reti a forma di U, come U-Net, sono quelle che ottengono i migliori
+risultati, dato dal fatto che sono in gradi di essere molto profonde senza
+soffrire del problema del gradiente evanescente grazie alle connessioni
+residuali. Queste reti seguono un approccio di codifica-decodifica, in cui
+l'input viene codificato in una rappresentazione più compatta, che viene
+successivamente decodificata in un output di dimensione equivalente a quella di
+input.\\
+Negli ultimi anni però i transformers, un tipo di rete neurale che sfrutta la
+tecnica dell'attenzione proposto per la prima volta nel campo del linguaggio
+naturale, hanno ottenuto risultati molto interessanti anche nell'ambito delle
+immagini. Non sono stati fin da subito adottati anche nel campo medico perché
+hanno la scomoda caratteristica di aver bisogno di molti dati per ottenere
+risultati comparabili o superiori alle reti convolutive. I dataset di immagini
+mediche sono pochi e ognuno contiene pochi esempi. Nel caso del canale alveolare
+inferiore, solo un dataset, Maxillo, ad oggi è disponibile e contiene $91$
+esempi con una etichettatura densa mentre $200$ con solo un'etichettatura sparsa
+(mentre nei dataset non medici, solitamente ha un numero di esempio dell'ordine
+di $10^5$). Questo problema è dato dal fatto che per annotare immagini mediche
+è necessario che un medico esperto le analizzi e le etichetti a mano, cosa che
+richiede molto tempo ed è anche molto costosa.
+Un altra caratteristica delle immagini mediche è che la zona da etichettare è
+solitamente molto piccola rispetto al volume completo, e questo rende più
+difficile l'apprendimento della rete.\\
+Il lavoro di questa tesi è stato inizialmente quello di fare un refactoring del
+codice precedentemente scritto, in modo da ottimizzare alcuni processi, come la
+lettura e il caricamento dei dati, migliorare l'usabilità e la mantenibilità e
+poter effettuare i test necessari in modo molto più efficace.
+Successivamente si è studiata l'efficacia di diverse tecniche proposte in
+letteratura, con lo scopo di migliorare lo stato dell'arte. Durante la tesi, ho
+potuto anche contribuire ad una libreria open source, TorchIO, estremamente
+utilizzata per caricare e processare immagini mediche insieme alle reti neurali
+profonde, aggiungendo una nuova funzionalità, inizialmente proposta da altri,
+che si è dimostrata molto efficace anche nei nostri esperimenti.
+
+
 }
 %
 \clearpage % Start a new page
@@ -303,8 +354,13 @@ CBCT) tramite l'utilizzo di reti neurali.\\
 \setstretch{1.3} % Reset the line-spacing to 1.3 for body text (if it has changed)
 
 \acknowledgements{\addtocontents{toc}{\vspace{1em}} % Add a gap in the Contents, for aesthetics
-
-Foremost, I would like to express my sincere gratitude to ...
+First and foremost, I would like to express my gratitude to my supervisors,
+Prof. Federico Bolelli and Prof. Costantino Grana, for their guidance, support,
+and encouragement throughout my work. I would also like to thank them for
+introducing me to the world of academic research by bringing me with them to a
+conference, and for inspiring me to continue my studies by enrolling in a Ph.D.
+program. Thanks goes also to my family and my friends  for their unwavering
+support because, without them, I would not be the person I am today.
 }
 \clearpage % Start a new page
 
@@ -372,7 +428,6 @@ Foremost, I would like to express my sincere gratitude to ...
 \input{Chapters/Chapter3}
 \input{Chapters/Chapter4}
 \input{Chapters/Chapter5}
-\input{Chapters/Chapter6}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

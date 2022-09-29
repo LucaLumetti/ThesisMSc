@@ -22,6 +22,8 @@ For this reason, my work starts by refactoring the codebase to add these feature
 which improved all my successive experiments.
 
 \section{Reference Work}
+The reference work that has been taken as starting point for this work has been
+made by Cipriano et al. in 2022 \cite{cipriano2022improving}.
 The pipeline proposed can be divided into two main steps: the deep label
 propagation and the IAC segmentation.
 
@@ -33,26 +35,26 @@ dimension. Although this alteration does not cause any variation in terms of
 performance, it ensures that the output of each convolution has the same size as
 its input along axis \emph{x}, \emph{y}, and \emph{z}.
 
-Resolution changes are therefore due uniquely to the
-three max-pooling layers, each halving the size of the
-volumes. When using the aforementioned input size, the
-encoder output is composed of $512$ feature maps of size
-$10 \times 10 \times 10$. Inside the decoder, on the other hand, resolution changes are caused by transposed convolutions, with
-dimensions $2 \times 2 \times 2$ for both the kernel and stride to double the size of the feature maps. This adjustment ensures
-resolution symmetry between features in the decoder and
-corresponding maps in the encoder, thus allowing them to
-be simply concatenated with skip connections. Moreover,
-the output of the model naturally has the same dimensions
-as the input. The final output is a single channel volume, to
-which we apply a Sigmoid activation function and a threshold at $0.5$ to obtain the final binary prediction mask.
+Resolution changes are therefore due uniquely to the three max-pooling layers,
+each halving the size of the volumes. When using the aforementioned input size,
+the encoder output is composed of $512$ feature maps of size $10 \times 10
+\times 10$. Inside the decoder, on the other hand, resolution changes are caused
+by transposed convolutions, with dimensions $2 \times 2 \times 2$ for both the
+kernel and stride to double the size of the feature maps. This adjustment
+ensures resolution symmetry between features in the decoder and corresponding
+maps in the encoder, thus allowing them to be simply concatenated with skip
+connections. Moreover, the output of the model naturally has the same dimensions
+as the input. The final output is a single channel volume, to which we apply a
+Sigmoid activation function and a threshold at $0.5$ to obtain the final binary
+prediction mask.
 
-The segmentation architecture is further enriched with a
-positional embedding. Since our sub-volumes are extracted
-from the original scan following a fixed grid, we exploit
-positional information derived from the location of the top-left and bottom-right corners of the sub-volume. Specifically, these global coordinates are fed to a linear layer which
-yields a single feature map of dimensions $10 \times 10 \times 10$. This
-positional embedding gets concatenated to the output of the
-encoder, and then fed to the decoder. Exploiting positional
+The segmentation architecture is further enriched with a positional embedding.
+Since our sub-volumes are extracted from the original scan following a fixed
+grid, we exploit positional information derived from the location of the
+top-left and bottom-right corners of the sub-volume. Specifically, these global
+coordinates are fed to a linear layer which yields a single feature map of
+dimensions $10 \times 10 \times 10$. This positional embedding gets concatenated
+to the output of the encoder, and then fed to the decoder. Exploiting positional
 information ensures two extremely important benefits:
 \begin{itemize}
   \item{During training, the CNN is fed with implicit information about areas
@@ -85,12 +87,14 @@ embedding supplies important information about the location of the cut, which is
 closely related to the diameter of the expanded labeled canal.
 
 \section{Refactoring}
-The code was divided into two main repositories, one for the 
-label propagation task and
-one for the IAC segmentation task. For this reason, a lot of code was duplicated and
-a single repository was created to host the whole codebase. Moreover, the code has been
-rewritten from scratch, and only some parts of the original codebase have been
-copied.
+The code was divided into two main repositories, one for the label propagation
+task and one for the IAC segmentation task. For this reason, a lot of code was
+duplicated and a single repository was created to host the whole codebase.
+Moreover, the code has been rewritten from scratch, and only some parts of the
+original codebase have been copied.
+Heavy use of the TorchIO library, mantained by Perez Garcia
+\cite{PerezGarcia2021torchio}, has been made to simplify and optimize part of
+the pipeline.
 % restructured to allow the user to easily change the parameters of the network
 
 \subsection{Data Loading}
@@ -127,83 +131,88 @@ depicts the relationship between these classes.
   \caption{SubjectsDataset class and its relationships.}
   \label{fig:subjectsdataset}
 \end{figure}
+
 With these data structures, a Maxillo class, which inherit from
 SubjectsDataset has been created to load the data. This class takes as input the
 path of the dataset, which is split to load (train, validation, test, synthetic)
 and optionally a list of Transformations that must be used as data augmentations. This class is completely independent from the rest of the code, and thus can be used in any other project which requires loading the Maxillo dataset.
 
 \subsection{Data Augmentation}
-Transformation functions that were previously defined in the same file of the data loader have been moved to a new file. Some of them were already implemented inside TorchIO and thus have been removed. The remaining ones have been adapted to inherit from the abstract \texttt{class torchio.transforms.Transform}, in
-order to be easily used inside TorchIO, such with the \emph{Composability} method
-which allows creating a directed acyclic graph of transformations that must be
-applied to the data.
+Transformation functions that were previously defined in the same file of the
+data loader have been moved to a new file. Some of them were already implemented
+inside TorchIO and thus have been removed. The remaining ones have been adapted
+to inherit from the abstract \texttt{class torchio.transforms.Transform}, in
+order to be easily used inside TorchIO, such with the \emph{Composability}
+method which allows creating a directed acyclic graph of transformations that
+must be applied to the data.
 
 \subsection{Config and command line arguments}
 In the original codebase, the parameters of the program were passed both as
 arguments from the command line and in the config file. This could generate some
 confusion and make it harder to reproduce experiments as the config file alone
 wasn't enough. For this reason, the config file is now the only source of
-parameters, while the only arguments that the software accepts are the path of the
-config file and a boolean value to enable/disable Tensorflow.
-An example of a config file is shown below:
+parameters, while the only arguments that the software accepts are the path of
+the config file and a boolean value to enable/disable Tensorboard \cite{abadi2015tensorflow}.
 
-\begin{lstlisting}[language=YAML,breaklines=true,caption=Example of config file., label=union]
-title: 'canal_generator_train'
-project_dir: '/homes/llumetti/results'
-seed: 47
-tensorboard_dir: '/homes/llumetti/tensorboard'
+% An example of a config file is shown below:
 
-experiment:
-  name: 'Generation'
+% \begin{lstlisting}[language=YAML,breaklines=true,caption=Example of config file., label=union]
+% title: 'canal_generator_train'
+% project_dir: '/homes/llumetti/results'
+% seed: 47
+% tensorboard_dir: '/homes/llumetti/tensorboard'
 
-data_loader:
-  dataset: '/nas/softechict-nas-1/llumetti/maxillo'
-  augmentations: 'configs/augmentations.yaml'
-  background_suppression: 0
-  batch_size: 2
-  labels:
-    BACKGROUND: 0
-    INSIDE: 1
-  mean: 0.08435
-  num_workers: 8
-  patch_shape:
-  - 120
-  - 120
-  - 120
-  resize_shape:
-  - 168
-  - 280
-  - 360
-  sampler_type: grid
-  grid_overlap: 0
-  std: 0.17885
-  volumes_max: 2100
-  volumes_min: 0
-  weights:
-  - 0.000703
-  - 0.999
+% experiment:
+%   name: 'Generation'
 
-model:
-  name: 'PosPadUNet3D'
+% data_loader:
+%   dataset: '/nas/softechict-nas-1/llumetti/maxillo'
+%   augmentations: 'configs/augmentations.yaml'
+%   background_suppression: 0
+%   batch_size: 2
+%   labels:
+%     BACKGROUND: 0
+%     INSIDE: 1
+%   mean: 0.08435
+%   num_workers: 8
+%   patch_shape:
+%   - 120
+%   - 120
+%   - 120
+%   resize_shape:
+%   - 168
+%   - 280
+%   - 360
+%   sampler_type: grid
+%   grid_overlap: 0
+%   std: 0.17885
+%   volumes_max: 2100
+%   volumes_min: 0
+%   weights:
+%   - 0.000703
+%   - 0.999
 
-loss:
-  name: 'Jaccard'
+% model:
+%   name: 'PosPadUNet3D'
 
-lr_scheduler:
-  name: 'Plateau'
+% loss:
+%   name: 'Jaccard'
 
-optimizer:
-  learning_rate: 0.1
-  name: 'SGD'
+% lr_scheduler:
+%   name: 'Plateau'
 
-trainer:
-  reload: False
-  checkpoint: null
-  do_train: False
-  do_test: False
-  do_inference: True
-  epochs: 100
-\end{lstlisting}
+% optimizer:
+%   learning_rate: 0.1
+%   name: 'SGD'
+
+% trainer:
+%   reload: False
+%   checkpoint: null
+%   do_train: False
+%   do_test: False
+%   do_inference: True
+%   epochs: 100
+% \end{lstlisting}
 
 \subsection{Interfaces}
 Something about interfaces used for Models, Losses, Optimizers, Schedulers and
@@ -211,15 +220,16 @@ Experiments...
 
 \subsection{Deploying and Running}
 The code was managed using Git and the repository is hosted on GitHub the
-repository is public and can be found at \url{https://github.com/AImageLab-zip/alveolar\_canal}.
-By using Git, it was possible to easily deploy the code on the AImagelab Server by
-means of a simple script that keeps the code up to date with the main branch.
-Other branches were used to develop new features and to test them before merging
-everything in the main branch. The Gitflow workflow was used to manage the
-branches. The training was scheduled using the SLURM scheduler, which is
-installed on the server. Some scripts were written to automatize the training
-process, which often required running sequentially multiple experiments with
-different configuration files and to recover training from a given checkpoint
-when the training was long and the scheduler kill the process for exceeding the
-time limit.
+repository is public and can be found at
+\url{https://github.com/AImageLab-zip/alveolar\_canal}. By using Git, it was
+possible to easily deploy the code on the AImagelab Server by means of a simple
+script that keeps the code up to date with the main branch. Other branches were
+used to develop new features and to test them before merging everything in the
+main branch. The Gitflow workflow was used to manage the branches. The training
+was scheduled using the SLURM scheduler \cite{yoo2003slurm}, which is installed
+on the server. Some scripts were written to automatize the training process,
+which often required running sequentially multiple experiments with different
+configuration files and to recover training from a given checkpoint when the
+training was long and the scheduler kill the process for exceeding the time
+limit.
 

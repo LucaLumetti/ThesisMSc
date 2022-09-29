@@ -77,19 +77,20 @@ following combination:
 \end{equation}
 Where $\alpha$ is a hyperparameter that weights the two losses.
 
-Kervadec et al. in the paper where they presented this type of novel loss
-they've adopted a peculiar way to set this $\alpha$. As the training was kind of
-unstable they set $\alpha$ to an initial value of $0$ and increased its value by
-$0.01$ and each training epoch until a fixed threshold. This type of approach
-have given the best results in terms of stability and performance thus we
-decided to adopt it also in our experiments.
+Kervadec et al. \cite{kervadec2019boundary} in the paper where they presented
+this type of novel loss they've adopted a peculiar way to set this $\alpha$. As
+the training was kind of unstable they set $\alpha$ to an initial value of $0$
+and increased its value by $0.01$ and each training epoch until a fixed
+threshold. This type of approach have given the best results in terms of
+stability and performance thus we decided to adopt it also in our experiments.
 
 \section{PosDeepLab v3+}
 DeepLab v3+ is another well-known architecture for semantic segmentation. It was
-proposed by Chen et al. in 2017 with version 1. Later in the years, they
-proposed small changes to the architecture, which resulted in version 2, 3, and
-the latest one, version 3+. The main novelty that can be found in this
-architecture is the use of Atrous Spatial Pyramid Convolutions, which are
+proposed by Chen et al. in 2015 with version 1 \cite{chen2014deeplab1}. Later in
+the years, they proposed small changes to the architecture, which resulted in
+version 2 \cite{chen2017deeplab2}, 3 \cite{chen2017deeplab3}, and the latest
+one, version 3+ \cite{chen2018deeplab3p}. The main novelty that can be found in
+this architecture is the use of Atrous Spatial Pyramid Convolutions, which are
 dilated convolutions in parallel, each one with a different dilation rate and
 later concatenated, the use of a fully connected Conditional Random Field, which
 improves the segmentation by maximizing the label agreement between similar
@@ -105,19 +106,20 @@ in Figure \ref{fig:deeplabv3+}.
 
 \section{PosSegNet}
 SegNet is a fully convolutional network for semantic segmentation. It was
-proposed by Badrinarayanan et al. in 2015 and is structured in two parts: an
-encoder and a decoder, similar to the one used in the U-Net. While the encoder
-is made of convolutional layers followed by max pooling. The indices of the
-max pooling are stored to be used in the decoder during the upsampling.
-The encoder part is made of the 13 convolutional layers of the VGG16 network,
-while in the decoder always 13 layers are used, but they are made of transposed
-convolutional layers. Finally, a K-class softmax classifier is used to predict
-the class for each pixel.
+proposed by Badrinarayanan et al. \cite{badrinarayanan2017segnet} in 2015 and is
+structured in two parts: an encoder and a decoder, similar to the one used in
+the U-Net. While the encoder is made of convolutional layers followed by max
+pooling. The indices of the max pooling are stored to be used in the decoder
+during the upsampling. The encoder part is made of the 13 convolutional layers
+of the VGG16 network, while in the decoder always 13 layers are used, but they
+are made of transposed convolutional layers. Finally, a K-class softmax
+classifier is used to predict the class for each pixel.
 Also in this case the same positional encoding used in PosPadUNet3D was
-introduced, as it was shown to be effective in the previous architecture.
-SegNet was originally proposed for the segmentation of images, but by changing
-the 2D operations to 3D ones, it can be used for the segmentation of 3D volumes.
-The architecture is shown in figure \ref{fig:segnet}.
+introduced, thus named the new network PosSegNet, as it was shown to be
+effective in the previous architecture. SegNet was originally proposed for the
+segmentation of images, but by changing the 2D operations to 3D ones, it can be
+used for the segmentation of 3D volumes. The architecture is shown in figure
+\ref{fig:segnet}.
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.5\textwidth]{Images/segnet.png}
@@ -126,22 +128,25 @@ The architecture is shown in figure \ref{fig:segnet}.
 \end{figure}
 
 \section{SwinUNETR3D}
-Hatamizadeh et al. recently proposed a novel architecture for 3D medical image
-segmentation which make use of the Transformer architecture. The main idea is to
-replace the convolutions of U-Net used in the encoding phase with Transformers.
-Instead of the standard Vision Transformers, Swin Transformers have been used as
-they have shown better performance on images. As Transformers are known to
-suffer where there is a lack of data, also a pre-training procedure has been
-proposed to overcome this problem. In the following sections, we will describe
-the proposed architecture, starting from the standard Transformer as proposed in
-the original paper "Attention is all you need" by Vaswani et al., and then we
-will look at how these ideas have been moved from NLP to Computer Vision.
+Hatamizadeh et al. \cite{hatamizadeh2022unetr,hatamizadeh2022swin} recently
+proposed a novel architectures for 3D medical image segmentation which make use
+of the Transformer architecture. The main idea is to replace the convolutions of
+U-Net used in the encoding phase with Transformers. Instead of the standard
+Vision Transformers, Swin Transformers have been used as they have shown better
+performance on images. As Transformers are known to suffer where there is a lack
+of data, also a pre-training procedure has been proposed \cite{tang2022self} to
+overcome this problem. In the following sections, we will describe SwinUNETR,
+starting from the standard Transformer as proposed in the original paper
+\emph{"Attention is all you need"} by Vaswani et al.
+\cite{vaswani2017attention}, and then we will look at how these ideas have been
+moved from Natural Language Processing to Computer Vision.
 
 \subsection{Transformer Architecture}
-The transformer architecture was first introduced by Vaswani et al. in $2017$ in
-the field of Natural Language Processing. The main idea is to replace a
-recurrent layer with a multi-head attention mechanism, which is a linear
-operation that can be computed in parallel.
+The transformer architecture was first introduced by Vaswani et al.
+\cite{vaswani2017attention} in $2017$ in the field of Natural Language
+Processing. The main idea is to replace a recurrent layer with a multi-head
+attention mechanism, which is a linear operation that can be computed in
+parallel.
 The attention mechanism is computed as follows:
 \begin{equation}
   \label{eq:attention}
@@ -177,17 +182,18 @@ language processing tasks, its applications to computer vision have remained
 limited for a few years. One of the reasons is that the complexity of the
 attention mechanism is $O(n^2)$, where $n$ is the number of pixels in the image.
 This makes it impractical for medium and large-size images. In $2020$,
-Dosovitskiy et al. proposed a novel architecture called Vision Transformer (ViT)
-which is able to scale up the Transformer architecture to images. The main idea
-is to reshape the original image $x \in \mathbb{R}^{H \times W \times C}$ into a
-sequence of patches $x_p \in \mathbb{R}^{P \times P \times C}$, where $H$, $W$,
-$C$ and $P$ are the height, width, number of channels and resolution of patches
-respectively. The Transformer uses constant latent vector size $D$ through all
-of its layers, so we flatten the patches and map to D dimensions with a
-trainable linear projection. The outputs of such projections are patch
-embeddings. An additional token \texttt{[class]} is added to the sequence, which
-is used to encode the class label of the image. The whole architecture is
-depicted in Figure \ref{fig:visiontransformer}.
+Dosovitskiy et al. \cite{dosovitskiy2020image} proposed a novel architecture
+called Vision Transformer (ViT) which is able to scale up the Transformer
+architecture to images. The main idea is to reshape the original image $x \in
+\mathbb{R}^{H \times W \times C}$ into a sequence of patches $x_p \in
+\mathbb{R}^{P \times P \times C}$, where $H$, $W$, $C$ and $P$ are the height,
+width, number of channels and resolution of patches respectively. The
+Transformer uses constant latent vector size $D$ through all of its layers, so
+we flatten the patches and map to $D$ dimensions with a trainable linear
+projection. The outputs of such projections are patch embeddings. An additional
+token \texttt{[class]} is added to the sequence, which is used to encode the
+class label of the image. The whole architecture is depicted in Figure
+\ref{fig:visiontransformer}.
 
 \begin{figure}[ht!]
   \centering
@@ -196,15 +202,15 @@ depicted in Figure \ref{fig:visiontransformer}.
   \label{fig:visiontransformer}
 \end{figure}
 
-
 \subsection{Swin Transformer}
 Swin Transformer, where the word \emph{Swin} stands for \emph{Shifted Window},
-is a novel architecture proposed by Zhang et al. in $2021$ which has become
-quite popular in the field of computer vision in these latter years. The problem
-that the authors wanted to solve is that the Vision Transformers are not really
-well suited for tasks that require dense prediction at pixel level such as
-semantic segmentation, so they propose a novel that constructs hierarchical
-feature maps and has linear computational complexity to image size.
+is a novel architecture proposed by Liu et al. \cite{liu2021swin} in $2021$
+which has become quite popular in the field of computer vision in these latter
+years. The problem that the authors wanted to solve is that the Vision
+Transformers are not really well suited for tasks that require dense prediction
+at pixel level such as semantic segmentation, so they propose a novel that
+constructs hierarchical feature maps and has linear computational complexity to
+image size.
 
 The Swin Transformer still relies on patches, but instead of choosing one size
 and sticking with it, it first starts with small patches for the first
@@ -219,7 +225,7 @@ because it is limited to a fixed number of patches $M$, so its complexity will
 be $O(M \times N)$ instead of $O(N^2)$ where $N$ is the number of patches.
 
 The output of such Transformer Layer is fed into a Merging Layer which
-concatenates the vectors of groups of 2x2 neighboring patches and fed to
+concatenates the vectors of groups of $2 \times 2$ neighboring patches and fed to
 another Linear layer to reduce the dimensionality.
 This process is repeated but for each layer, the region where the attention was
 limited to is shifted in order to apply the attention to a different set of
@@ -235,7 +241,7 @@ the extracted multi-scale features can be leveraged for further processing.
 \end{figure}
 
 \subsection{Final Architecture and pre-training}
-The final architecture that has been proposed by Hatamizadeh et al. follows the
+The final architecture that has been proposed by Hatamizadeh et al. \cite{hatamizadeh2022swin} follows the
 structure of U-Net3D, but in the encoder part, SwinTransformers are used instead
 of the standard 3D Convolution. Some changes from the original paper have been
 made in order to adapt the model to our type of data. From the original volume
@@ -257,25 +263,27 @@ as in the original U-Net architecture. The whole architecture is shown in Figure
 As already mentioned, a pre-training phase is performed to overcome the data
 hungriness characteristic of Transformers. The pretraining has been performed by
 paper authors on a variety of datasets of CT scans of different types have been
-used. A total of 5 public CT datasets, consisting of a total of 5,050 subjects,
-are used to construct the pre-training dataset. We do not have tried to perform
-the same pre-training on CBCT data instead of CT because the time required was
-prohibitive.
+used. A total of $5$ public CT datasets, consisting of a total of $5050$
+subjects, are used to construct the pre-training dataset. We do not have tried
+to perform the same pre-training on CBCT data instead of CT because the time
+required was prohibitive.
 The datasets used are:
 \begin{itemize}
   \item{\textbf{Head \& Neck Squamous Cell Carcinoma (HNSCC)}: A collection
     contains imaging, radiation therapy, and clinical data from 627 head and
-    neck squamous cell carcinoma (HNSCC) patients at MD Anderson Cancer Center.}
+    neck squamous cell carcinoma (HNSCC) patients at MD Anderson Cancer Center.
+    \cite{grossberg2018imaging}}
   \item{\textbf{Lung Nodule Analysis 2016 (LUNA 16)}: a collection of 888 CT
-    scans of lung nodules.}
+    scans of lung nodules. \cite{setio2017validation}}
   \item{\textbf{TCIA CT Colonography Trial}: a collection of 825 CT colonography
-    scans.}
+    scans. \cite{johnson2008accuracy}}
   \item{\textbf{TCIA Covid 19}: a set of 2 datasets for a total of 753 CT scans
-    of the chest and annotation about the Covid-19 infection.}
+    of the chest and annotation about the Covid-19 infection.
+    \cite{desai2020chest}}
   \item{\textbf{TCIA LIDC-IDRI}: a collection obtained by the collaboration of
     seven academic centers and eight medical imaging companies. It contains 1018
     cases of diagnostic and lung cancer screening thoracic computed tomography
-    (CT) scans with marked-up annotated lesions.}
+    (CT) scans with marked-up annotated lesions. \cite{armato2011lung}}
 \end{itemize}
 
 \begin{figure}[ht!]
@@ -301,13 +309,13 @@ been used in that self-supervised phase:
     $y_r$, a cross-entropy loss is used for rotation prediction task:
     $$\mathcal{L}_{rot} = -\sum^R_{r=1}y_r\log(\hat{y}_r)$$}
   \item{\textbf{Contrastive coding}: The rotations used above where also used
-    inside a contrastive loss. Given a batch of augmented sub-volumes, the
-    contrastive coding allows for a better representation learning by maximizing
-    the mutual information between positive pairs, while minimizing that between
-    negative pairs. A linear layer is attached to the encoder to map each
-    augmented sub.volume to a latent representation $v$. The cosing similarity
-    is used as the distance measurement. The final loss between a pair $v_i$ and
-    $v_j$ is defined as:
+    inside a contrastive loss \cite{oord2018representation}. Given a batch of
+    augmented sub-volumes, the contrastive coding allows for a better
+    representation learning by maximizing the mutual information between
+    positive pairs, while minimizing that between negative pairs. A linear layer
+    is attached to the encoder to map each augmented sub.volume to a latent
+    representation $v$. The cosing similarity is used as the distance
+    measurement. The final loss between a pair $v_i$ and $v_j$ is defined as:
     $$\mathcal{L}_{contra} = -\log{\frac{\exp{(sim(v_i,v_j)/t)}}{\sum_k^{2N}1_{k
     \neq i}\exp{(sim(v_i,v_k)/t)}}}$$
     where $t$ is the measurement of normalized temperature scale. $1$ is the
@@ -338,7 +346,7 @@ For this reason, we decided to apply the Hann window function to 3D volumes to
 try to reduce edge effects.
 \subsection{Hann window function in 1D}
 The Hann window function, named after Julius von Hann, has been fist defined in
-the field of signal processing, thus in 1D, as:
+the field of signal processing \cite{oord2018representation}, thus in 1D, as:
 $$
 w[n] = 0.5(1 - \cos(\frac{2\pi n}{N})), \quad n = 0, \dots, N
 $$
@@ -500,8 +508,8 @@ metrics as usual. With this approach, we managed to gain a speedup of $24$ times
 while the DICE score was only slightly affected by a drop of $0.02$.
 
 \section{Results}
-All the models have been trained using PyTorch, on two NVIDIA P100 GPUs with 16
-GB of memory, over the AImagelab server.
+All the models have been trained using PyTorch \cite{paszke2019pytorch}, on two
+NVIDIA P100 GPUs with 16 GB of memory, over the AImagelab server.
 The model proposed by Cipriano et al. achieved the best results among the
 different tries and managed to keep the title of the state-of-the-art model for
 the task of segmentation of the Inferior Alveolar Canal. However, the

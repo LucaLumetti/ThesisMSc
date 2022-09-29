@@ -62,7 +62,10 @@ a vast information gap for the research community: researchers are unable to
 replicate experiments and lack valid benchmarks for their novelties.
 
 \section{Dataset}
-The 3D CBCT volumes composing our dataset have been acquired by the Affidea
+Cipriano et al. \cite{cipriano2022deep} have released a public dataset of
+maxillofacial scans with a sparse and deep labels, which is the first of its
+kind.
+The 3D CBCT volumes composing the dataset have been acquired by the Affidea
 center located in Modena, Italy. Affidea is a leading pan-European healthcare
 group specialized in the provision of advanced diagnostics, specialist
 outpatient services, laboratory analyses, physiotherapy and rehabilitation,
@@ -135,8 +138,8 @@ volumes for which both dense and sparse annotations are available, and the
 secondary dataset, only sparsely annotated.
 
 The entire voxel-level annotation procedure has been performed by means of a
-tool developed by Mercadante et al. which allowed to drastically reduce the
-burden necessary to produce the 3D label.
+tool developed by Mercadante et al. \cite{mercadante2021cone} which allowed to
+drastically reduce the burden necessary to produce the 3D label.
 The annotation steps can be summarized as follows:
 \begin{enumerate}
   \item{After loading the input data, the arch approximation that better
@@ -169,8 +172,9 @@ The annotation steps can be summarized as follows:
 
   \item{The splines are saved as the coordinates of their control points. The
     final smooth and precise ground-truth volume constituting the dataset is
-    generated from this set of points by means of the \textalpha-shape
-    algorithm, which is described in detail in the Section \ref{sec:alpha}.}
+    generated from this set of points by means of the \textalpha-shape algorithm
+    \cite{edelsbrunner1983shape}, which is described in detail in the Section
+    \ref{sec:alpha}.}
 \end{enumerate}
 
 \begin{figure}[!ht]
@@ -250,7 +254,6 @@ a $D_\alpha$ containing the entire $\mathcal{S}$, and which has the property
 that $p_i$ and $p_j$ lie on its boundary. It is straightforward to
 notice that, when $\alpha = 0$, this process constructs the convex
 hull. Instead, positive or negative values of \textalpha\;allow building
-% WHY I NEED \; ABOVE?
 cruder or finer shapes respectively, with the latter possibly including concave
 angles. Because of the geometrical nature of the alveolar nerve, we are indeed
 exclusively interested in concave \textalpha-shapes, i.e., with $\alpha < 0$.
@@ -258,13 +261,54 @@ When $\alpha < 0$, the \textalpha-shape can be computed starting from the
 Delaunay triangulation: the set of triangles of the Delaunay triangulation whose
 circumradius is at most $\frac{1}{\alpha}$ form a simplicial subcomplex, called
 \textalpha-complex, and its border coincides with the \textalpha-shape.
-% TODO: add fig 9 or remove this line
-The process is exemplified in Fig. 9.
+The process is exemplified in Fig. \ref{fig:alphabuild}.
 
 The generalization of the above notions to $3$ dimensions is just a matter of
 substituting disks and triangles with spheres and tetrahedra. An example of
 \textalpha-shape constructed from the volumetric annotations of the alveolar
 nerve is depicted in Fig. \ref{fig:alpha1}.
+\begin{figure}[h!]
+  \centering
+  %%%%%%%%%%%%%%%%
+  \begin{subfigure}{1\textwidth}
+    \centering
+    \begin{subfigure}{0.24\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/alpha_1.png}
+      \caption{Point set}
+      \label{fig:pointset}
+    \end{subfigure}
+    %%%%%%%%%%%%%%%%
+    \begin{subfigure}{0.24\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/alpha_2.jpg}
+      \caption{Delunay}
+      \label{fig:delunay}
+    \end{subfigure}
+    %%%%%%%%%%%%%%%%
+    \begin{subfigure}{0.24\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/alpha_3.jpg}
+      \caption{\textalpha-complex}
+      \label{fig:alphacomplex}
+    \end{subfigure}
+    %%%%%%%%%%%%%%%%
+    \begin{subfigure}{0.24\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{Images/alpha_4.jpg}
+      \caption{\textalpha-shape}
+      \label{fig:alphashape}
+    \end{subfigure}
+  \end{subfigure}
+  %%%%%%%%%%%%%%%%
+  \caption{\textalpha-shape construction process for the point set of
+  \ref{fig:pointset}, with $\alpha = -2.5$. First the Delaunay triangulation is
+  built \ref{fig:delunay}, then only triangles whose circumradius is at most
+  $-\frac{1}{\alpha}$ are kept, which form a subcomplex called
+  \textalpha-complex \ref{fig:alphacomplex}. Finally, the border of the
+  \textalpha-complex is the \textalpha-shape \ref{fig:alphashape}.}
+  \label{fig:alphabuild}
+\end{figure}
 
 The \textalpha-shape is a good representation of the annotated volume, but
 because it is a polygonal mesh, it cannot directly be used as a ground truth
