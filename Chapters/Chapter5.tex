@@ -3,11 +3,11 @@
 \chapter{Trying to improve the State of the Art}
 
 \lhead{Chapter 5. \emph{Trying to improve the State of the Art}} % This is for the header on each page - perhaps a shortened title
-\label{chp:refwork}
+\label{chp:improve}
 %----------------------------------------------------------------------------------------
 
 \def\:{\hskip0pt} %Definisce un modo veloce per permettere a latex di sillabare correttamente anche parole come 4-connectivity. Il corretto utilizzo è il seguente: 4\:-\:connectivity.
-The architecture proposed by Cipriano et al. was quite simple yet effective. The
+The architecture proposed by Cipriano \etal was quite simple yet effective. The
 main novel addition was the use of positional encoding. We now want to try to
 improve the results obtained by them by adding some more complex
 and more recent architectures, losses, and optimizers.
@@ -19,7 +19,7 @@ been discarded. As we were dealing with highly unbalanced data, less than 1\% of
 the whole volume is the canal, we looked for alternative losses which deal with
 this problem.
 
-Kervadec et al. \cite{kervadec2019boundary} proposed a loss function that takes
+Kervadec \etal \cite{kervadec2019boundary} proposed a loss function that takes
 the form of a distance metric on the space of contours instead of regions. Dice
 or cross-entropy, are based on regional integrals, which are convenient for
 training deep neural networks. In practice, these regional integrals are
@@ -71,13 +71,13 @@ losses, since it provides information about the boundary of the segmentation
 region, therefore they can be combined. In our experiments, we used the
 following combination:
 \begin{equation}
-  \label{eq:boundaryloss}
+  \label{eq:final}
   \mathcal{L}(\theta) = (1-\alpha)\mathcal{L}_{\text{boundary}}(\theta) +
   \alpha\mathcal{L}_{\text{DICE}}(\theta)
 \end{equation}
 Where $\alpha$ is a hyperparameter that weights the two losses.
 
-Kervadec et al. \cite{kervadec2019boundary} in the paper where they presented
+Kervadec \etal \cite{kervadec2019boundary} in the paper where they presented
 this type of novel loss they've adopted a peculiar way to set this $\alpha$. As
 the training was kind of unstable they set $\alpha$ to an initial value of $0$
 and increased its value by $0.01$ and each training epoch until a fixed
@@ -86,7 +86,7 @@ stability and performance thus we decided to adopt it also in our experiments.
 
 \section{PosDeepLab v3+}
 DeepLab v3+ is another well-known architecture for semantic segmentation. It was
-proposed by Chen et al. in 2015 with version 1 \cite{chen2014deeplab1}. Later in
+proposed by Chen \etal in 2015 with version 1 \cite{chen2014deeplab1}. Later in
 the years, they proposed small changes to the architecture, which resulted in
 version 2 \cite{chen2017deeplab2}, 3 \cite{chen2017deeplab3}, and the latest
 one, version 3+ \cite{chen2018deeplab3p}. The main novelty that can be found in
@@ -106,7 +106,7 @@ in Figure \ref{fig:deeplabv3+}.
 
 \section{PosSegNet}
 SegNet is a fully convolutional network for semantic segmentation. It was
-proposed by Badrinarayanan et al. \cite{badrinarayanan2017segnet} in 2015 and is
+proposed by Badrinarayanan \etal \cite{badrinarayanan2017segnet} in 2015 and is
 structured in two parts: an encoder and a decoder, similar to the one used in
 the U-Net. While the encoder is made of convolutional layers followed by max
 pooling. The indices of the max pooling are stored to be used in the decoder
@@ -128,7 +128,7 @@ used for the segmentation of 3D volumes. The architecture is shown in figure
 \end{figure}
 
 \section{SwinUNETR3D}
-Hatamizadeh et al. \cite{hatamizadeh2022unetr,hatamizadeh2022swin} recently
+Hatamizadeh \etal \cite{hatamizadeh2022unetr,hatamizadeh2022swin} recently
 proposed a novel architectures for 3D medical image segmentation which make use
 of the Transformer architecture. The main idea is to replace the convolutions of
 U-Net used in the encoding phase with Transformers. Instead of the standard
@@ -137,12 +137,12 @@ performance on images. As Transformers are known to suffer where there is a lack
 of data, also a pre-training procedure has been proposed \cite{tang2022self} to
 overcome this problem. In the following sections, we will describe SwinUNETR,
 starting from the standard Transformer as proposed in the original paper
-\emph{"Attention is all you need"} by Vaswani et al.
+\emph{"Attention is all you need"} by Vaswani \etal
 \cite{vaswani2017attention}, and then we will look at how these ideas have been
 moved from Natural Language Processing to Computer Vision.
 
 \subsection{Transformer Architecture}
-The transformer architecture was first introduced by Vaswani et al.
+The transformer architecture was first introduced by Vaswani \etal
 \cite{vaswani2017attention} in $2017$ in the field of Natural Language
 Processing. The main idea is to replace a recurrent layer with a multi-head
 attention mechanism, which is a linear operation that can be computed in
@@ -182,7 +182,7 @@ language processing tasks, its applications to computer vision have remained
 limited for a few years. One of the reasons is that the complexity of the
 attention mechanism is $O(n^2)$, where $n$ is the number of pixels in the image.
 This makes it impractical for medium and large-size images. In $2020$,
-Dosovitskiy et al. \cite{dosovitskiy2020image} proposed a novel architecture
+Dosovitskiy \etal \cite{dosovitskiy2020image} proposed a novel architecture
 called Vision Transformer (ViT) which is able to scale up the Transformer
 architecture to images. The main idea is to reshape the original image $x \in
 \mathbb{R}^{H \times W \times C}$ into a sequence of patches $x_p \in
@@ -204,7 +204,7 @@ class label of the image. The whole architecture is depicted in Figure
 
 \subsection{Swin Transformer}
 Swin Transformer, where the word \emph{Swin} stands for \emph{Shifted Window},
-is a novel architecture proposed by Liu et al. \cite{liu2021swin} in $2021$
+is a novel architecture proposed by Liu \etal \cite{liu2021swin} in $2021$
 which has become quite popular in the field of computer vision in these latter
 years. The problem that the authors wanted to solve is that the Vision
 Transformers are not really well suited for tasks that require dense prediction
@@ -241,7 +241,7 @@ the extracted multi-scale features can be leveraged for further processing.
 \end{figure}
 
 \subsection{Final Architecture and pre-training}
-The final architecture that has been proposed by Hatamizadeh et al. \cite{hatamizadeh2022swin} follows the
+The final architecture that has been proposed by Hatamizadeh \etal \cite{hatamizadeh2022swin} follows the
 structure of U-Net3D, but in the encoder part, SwinTransformers are used instead
 of the standard 3D Convolution. Some changes from the original paper have been
 made in order to adapt the model to our type of data. From the original volume
@@ -510,7 +510,7 @@ while the DICE score was only slightly affected by a drop of $0.02$.
 \section{Results}
 All the models have been trained using PyTorch \cite{paszke2019pytorch}, on two
 NVIDIA P100 GPUs with 16 GB of memory, over the AImagelab server.
-The model proposed by Cipriano et al. achieved the best results among the
+The model proposed by Cipriano \etal achieved the best results among the
 different tries and managed to keep the title of the state-of-the-art model for
 the task of segmentation of the Inferior Alveolar Canal. However, the
 experiments that have been made have obtained comparable metrics thus they might

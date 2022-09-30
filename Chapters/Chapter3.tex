@@ -62,7 +62,7 @@ a vast information gap for the research community: researchers are unable to
 replicate experiments and lack valid benchmarks for their novelties.
 
 \section{Dataset}
-Cipriano et al. \cite{cipriano2022deep} have released a public dataset of
+Cipriano \etal \cite{cipriano2022deep} have released a public dataset of
 maxillofacial scans with a sparse and deep labels, which is the first of its
 kind.
 The 3D CBCT volumes composing the dataset have been acquired by the Affidea
@@ -126,7 +126,7 @@ and can be annotated as in Fig. \ref{fig:panoramic_annotated}.
     \label{fig:panoramic_annotated}
   \end{subfigure}
   \caption{Panoramic view and its annotation.}
-  \label{fig:2d3dannot}
+  \label{fig:panoramicandannotated}
 \end{figure}
 
 \subsection{3D dense annotations}
@@ -138,7 +138,7 @@ volumes for which both dense and sparse annotations are available, and the
 secondary dataset, only sparsely annotated.
 
 The entire voxel-level annotation procedure has been performed by means of a
-tool developed by Mercadante et al. \cite{mercadante2021cone} which allowed to
+tool developed by Mercadante \etal \cite{mercadante2021cone} which allowed to
 drastically reduce the burden necessary to produce the 3D label.
 The annotation steps can be summarized as follows:
 \begin{enumerate}
@@ -204,7 +204,7 @@ The hand-drawn ground truth annotations produced with the tool described in the
 previous section result in a dense and jagged point set; an example is depicted
 in Fig. \ref{fig:pointset}. Starting from this point set, we reconstruct a
 smoother polygon mesh in the form of the \textalpha-shape. The \textalpha-shape,
-defined by Edelsbrunner et al. is a generalization of the concept of the convex
+defined by Edelsbrunner \etal is a generalization of the concept of the convex
 hull, useful to capture the intuitive notion of the shape of a point set. The
 definition refers to the 2-dimensional case, but the extension to point sets in
 $k$ dimensions is straightforward. The \textalpha-shape is parameterized over
@@ -276,7 +276,7 @@ nerve is depicted in Fig. \ref{fig:alpha1}.
       \centering
       \includegraphics[width=\textwidth]{Images/alpha_1.png}
       \caption{Point set}
-      \label{fig:pointset}
+      \label{fig:alpha_1_pointset}
     \end{subfigure}
     %%%%%%%%%%%%%%%%
     \begin{subfigure}{0.24\textwidth}
@@ -302,7 +302,7 @@ nerve is depicted in Fig. \ref{fig:alpha1}.
   \end{subfigure}
   %%%%%%%%%%%%%%%%
   \caption{\textalpha-shape construction process for the point set of
-  \ref{fig:pointset}, with $\alpha = -2.5$. First the Delaunay triangulation is
+  \ref{fig:alpha_1_pointset}, with $\alpha = -2.5$. First the Delaunay triangulation is
   built \ref{fig:delunay}, then only triangles whose circumradius is at most
   $-\frac{1}{\alpha}$ are kept, which form a subcomplex called
   \textalpha-complex \ref{fig:alphacomplex}. Finally, the border of the

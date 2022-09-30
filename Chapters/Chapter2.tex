@@ -23,7 +23,7 @@ extracted features
 from the latent space to the original space size.
 
 \subsubsection{U-Net and V-Net}
-In 2015, Ronneberger et al. \cite{ronneberger2015unet} proposed U-Net which has
+In 2015, Ronneberger \etal \cite{ronneberger2015unet} proposed U-Net which has
 been widely used for medical image segmentation and many variants have been
 proposed also in recent years. The structure of U-Net is symmetrical and the
 main scope is to fuse low-level features, which medical images are usually noisy
@@ -35,17 +35,17 @@ we usually have to handle 3D images. A straightforward solution was to extract
 outputs to obtain the final 3D output.
 The main drawback of this approach is that we lost the spatial information among
 the slices as they are threatened as independent images. Motivated by this idea,
-Çiçek et al. \cite{cicek20163dunet} proposed a solution to this problem by using
+Çiçek \etal \cite{cicek20163dunet} proposed a solution to this problem by using
 3D convolutions inside U-Net. This network, named 3D U-Net, includes only three
 down-sampling steps because of the high computational cost of 3D Convolutions,
 leading to less effective extraction of deep-layer image features.
-Milletari et al. \cite{milletari2016vnet} proposed a similar architecture, named
+Milletari \etal \cite{milletari2016vnet} proposed a similar architecture, named
 V-Net, which employs more skip connections than U-Net to design a deeper
 network. Some Recurrent Neural Network mixed with U-Net has also been proposed
 to model the time dependence of image sequences.
 
 \subsubsection{Recurrent Neural Networks}
-Gao et al. \cite{gao2018lstm} joined LSTM and CNN to model the temporal
+Gao \etal \cite{gao2018lstm} joined LSTM and CNN to model the temporal
 relationships between different brain MRI slices to improve segmentation
 accuracy. RNN can capture local and global spatial features of images by
 considering the context information relationship. However, in medical image
@@ -57,7 +57,7 @@ medical image segmentation.
 \subsubsection{Pseudo-3D Networks}
 As stated before, most medical images are 3D images but using 3D convolution
 requires a lot of computational resources. Therefore some pseudo-3D segmentation
-methods have been proposed. For example, Vu et al. \cite{vu2020pseudo3d} applied
+methods have been proposed. For example, Vu \etal \cite{vu2020pseudo3d} applied
 the overlay of adjacent slices as input to the central slice prediction and then
 fed the obtained 2D feature map into a standard 2D network.
 
@@ -65,7 +65,7 @@ fed the obtained 2D feature map into a standard 2D network.
 \label{subsubsec:gan}
 Another type of networks that has been exploited in medical image segmentation
 are Generative Adversarial Networks (GANs) \cite{goodfellow2020gan}, mostly used
-in data augmentation by generating new samples. Pollastri et al.
+in data augmentation by generating new samples. Pollastri \etal
 \cite{pollastri2020gan} remodeled two different well-known GANs, Deep
 Convolutional GAN, and a Laplacian GAN, to generate both skin lesion images and
 their segmentation masks, making the augmentation process extremely
@@ -75,7 +75,7 @@ may be crucial for improving the medical image segmentation effect, where images
 are corrupted and thus contain artifacts due to limitations of imaging
 techniques. However, there are few works about how to incorporate prior
 knowledge into CNN models. As one of the earliest studies in this field, Oktay
-et al. \cite{oktay2017acnn} proposed a novel and general method to combine a
+\etal \cite{oktay2017acnn} proposed a novel and general method to combine a
 priori knowledge of shape and label structure into the anatomically constrained
 neural networks (ACNN) for medical image analysis tasks. In this way, the neural
 network training process can be constrained and guided to make more anatomical
@@ -94,7 +94,7 @@ segmentation accuracy.
 Dense connection is the most popular network block in medical image
 segmentation, used to construct a kind of special convolution neural network.
 The input of each layer comes from the output of all previous layers in the
-process of forwarding transmission. Inspired by this design, Guan et al.
+process of forwarding transmission. Inspired by this design, Guan \etal
 \cite{guan2019fully} proposed an improved U-Net by replacing each sub-block of
 the network with a form of dense connection. Although the dense connection helps
 obtain richer image features, it often reduces the robustness of feature
@@ -105,7 +105,7 @@ For CNNs, deep networks often give better performances than shallow ones, but
 they encounter some new problems such as vanishing gradient, high memory usage,
 and slow convergence. The inception structure used in GoogleNet
 \cite{szegedy2015googlenet,szegedy2016rethinking} overcomes these problems, and
-for this reason, it has been also used over medical images. Gu et al.
+for this reason, it has been also used over medical images. Gu \etal
 \cite{guan2019fully} proposed CE-Net by introducing the inception structure
 and atrous convolution to each parallel structure to extract features on a
 wide reception field. Such complex structure however leads to a difficult
@@ -113,26 +113,78 @@ model modification.
 
 \subsubsection{Depth separability}
 To reduce the computational cost of 3D convolutions and their memory usage,
-Howard et al. \cite{howard2017mobilenets} proposed MobileNet to decompose
+Howard \etal \cite{howard2017mobilenets} proposed MobileNet to decompose
 vanilla convolutions into depthwise separable convolution and pointwise
 convolution.
-% TODO: aggiungere calcolo del numero di calcoli fatti tra le 3D e le depth
-% separable
+A standard convolution layer takes as input a 3D volume X of shape
+$(l_x, w_x, h_x, c_x)$ and outputs a 3D volume Y of shape
+$(l_y, w_y, h_y, c_y)$, while the kernel will be of shape $(k, k, k, c_x, c_y)$,
+where $k$ is the kernel size. The output will be computed as:
+\begin{equation}
+  Y_{l, w, h, n} = \sum_{i, j, k, m} K_{i, j, k, m, n} \cdot X_{l + i - 1, w + j - 1, h + k - 1, m}
+\end{equation}
+where $x, y, z$ and $i, j, k$ denotes voxel’s spatial position and $m$ denotes
+the input channels while $n$ denotes the output channels. And the computation
+cost would be:
+\begin{equation}
+  \label{eq:3dconv_complexity}
+  \mathcal{O}(l_x \cdot w_x \cdot h_x \cdot k^3 \cdot c_x \cdot c_y)
+\end{equation}
+For the depthwise convolution, we decompose the procedure explained above in two
+steps by using two different filters. The first step is to apply a filter for each
+individual channel, and the second step is to apply a $1 \times 1 \times 1
+\times c$ filter to combine the results. ReLU and batch normalization are
+applied after both steps. The output for a 3D depthwise convolution is:
+
+\begin{equation}
+ \hat{Y}_{x,y,z,m} = \sum_{i,j,k,m} \hat{K}_{i,j,k,m} \cdot
+ X_{x+i-1,y+j-1,z+k-1,m}
+\end{equation}
+
+where $x, y, z$ and $i, j, k$ again denotes the spatial position of a voxel.
+$\hat{K}$ will be a depthwise convolution kernel of size $k \times k \times k
+\times c_x$ and the $m$-th filter in $\hat{K}$ will be applied to the $m$-th
+channel in $X$, while the output of the $m$-th filter becomes the $m$-th layer
+in $\hat{Y}$. Next we have to combine each channel by using the $1 \times 1
+\times 1 \times$ at every position of the feature map, essentially carrying out
+a linear combinations of layers of all depths, fusing the splitted channels back
+together.
+
+The total cost will be:
+\begin{equation}
+  \label{eq:depthwise_complexity}
+  \mathcal{O}(k^3 \cdot c_x \cdot l_x \cdot w_x \cdot h_x + c_x \cdot c_y \cdot
+  l_x \cdot w_x \cdot h_x)
+\end{equation}
+
+By dividing \ref{eq:depthwise_complexity} by \ref{eq:3dconv_complexity}, we can
+computed how much more efficient depthwise separable convolution is compared to
+vanilla 3D convolution:
+\begin{equation}
+  \label{eq:depthwise_efficiency}
+  \frac{\mathcal{O}(k^3 \cdot c_x \cdot l_x \cdot w_x \cdot h_x + c_x \cdot c_y
+  \cdot l_x \cdot w_x \cdot h_x)}{\mathcal{O}(l_x \cdot w_x \cdot h_x \cdot k^3
+  \cdot c_x \cdot c_y)} = \frac{1}{c_y} + \frac{1}{k^3}
+\end{equation}
+Usually, the filter has a size of $3 \times 3 \times 3$, and the number of
+channels can vary from $64$ to $512$. Therefore, separable convolutions are from
+$\frac{1}{\frac{1}{27} + \frac{1}{64}} = 18.99$ to $\frac{1}{\frac{1}{27} +
+\frac{1}{512}} = 25.65$ times more efficient than standard convolutions.
 
 \subsubsection{Attention}
 \par
 Attention block can selectively change input or assigns different weights to
 input variables according to different importance.\\
 \emph{Spatial Attention} block aims to calculate the feature importance of each
-pixel in the space domain and extract the key information of an image. Oktay et
-al. \cite{oktay2018attentionunet} proposed attention U-Net, where attention
+pixel in the space domain and extract the key information of an image. Oktay
+\etal \cite{oktay2018attentionunet} proposed attention U-Net, where attention
 blocks were used to change the output of the encoder before fusing features from
 the encoder and the corresponding decoder.
 The attention block outputs a gating signal to control the feature importance of
 pixels at different spatial positions.\\
 Another type of attention block is the \emph{Channel attention}, which utilizes
 learned global information to emphasize selectively useful features and suppress
-useless features. Hu et al. \cite{hu2018squeeze} proposed SE-Net introducing the
+useless features. Hu \etal \cite{hu2018squeeze} proposed SE-Net introducing the
 channel attention to the field of image analysis and winning the ImageNet
 Challenge in 2017.\\
 Spatial and channel attention mechanisms are the two most popular strategies for
@@ -202,7 +254,7 @@ where the weight $\omega_j$ is used to adjust the weight of each class, and $\om
 
 \subsubsection{Boundary Loss}
 Another approach that solves the problem of class imbalance has been proposed by
-Kervadec et al. \cite{kervadec2019boundary} for the task of brain lesion
+Kervadec \etal \cite{kervadec2019boundary} for the task of brain lesion
 segmentation. They proposed a Boundary Loss which aims to minimize the distance
 between segmentedboundaries and labeled boundaries. Results show that the
 combination of the Dice loss and the boundary loss is superior to the single
@@ -219,11 +271,11 @@ where $\phi(y)$ is the signed distance function applied to the real segmentation
 \par
 For medical image segmentation, the improvement of loss mainly focuses on the
 problem of segmentation of small objects in a large background (the problem of
-class imbalance). Chen et al. \cite{kervadec2019boundary} proposed a new loss
+class imbalance). Chen \etal \cite{kervadec2019boundary} proposed a new loss
 function by applying traditional active contour energy minimization to
-convolutional neural networks, Li et al. \cite{li2020transformation} proposed a
+convolutional neural networks, Li \etal \cite{li2020transformation} proposed a
 new regularization term to improve the cross-entropy loss function, and Karimi
-et al. \cite{karimi2019reducing} proposed a loss function based on Hausdorff
+\etal \cite{karimi2019reducing} proposed a loss function based on Hausdorff
 distance (HD). Besides, there is still a lot of work trying to deal with this
 problem by adding penalties to lose functions or changing the optimization
 strategy according to specific tasks.\\
@@ -267,7 +319,7 @@ combination with standard GANs to generate labels relative to a given synthetic
 image.
 
 \subsection{Sparse Labels}
-Cipriano et al. \cite{cipriano2022improving} recently proposed a pre-training
+Cipriano \etal \cite{cipriano2022improving} recently proposed a pre-training
 approach based on sparse labels. This type of labels are way easier to obtain
 but is not as accurate as the real dense labels. They fed these labels to the
 network together with the input image for a given number of steps, then used the
@@ -284,7 +336,7 @@ useful as it improves the accuracy of segmentations. However, domain
 adaptation may be a problem when applying models trained over natural images to
 medical image analysis tasks. Moreover, these methods are hardly applicable to
 3D medical image analysis because such pre-trained models rely on 2D datasets.\\
-Tang et al. \cite{tang2022self} recently proposed an unsupervised approach to
+Tang \etal \cite{tang2022self} recently proposed an unsupervised approach to
 pre-train a given model by relying only on unannotated medical images of the
 same domain of the main tasks. In practice, the network is trained to perform a
 variety of tasks such as image reconstruction, classification of the rotation
@@ -322,7 +374,7 @@ assessing how well the network structure performs on target datasets. For NAS
 techniques, researchers pay more attention to the improvement of search
 strategies since search space and performance estimation methods are usually
 rarely changed.\\
-Isensee et al. \cite{isensee2018nnu} argued that too much manual adjustment on
+Isensee \etal \cite{isensee2018nnu} argued that too much manual adjustment on
 network structure could lead to over-fitting for a given dataset, and therefore
 proposed a medical image segmentation framework no-newUNet (nnU-Net) that adapts
 itself to any new dataset. The nnUNet automatically adjusts all hyperparameters
@@ -342,7 +394,7 @@ Graph Convolutional Neural Network (GCN) is a type of neural network that
 utilizes graph structure to process data. In practice, the Euclidean space of
 the image can be converted into graphs that can be modeled using GCN.
 
-Gao et al. \cite{gao2019graph} designed a new graph pooling (gPool) and graph
+Gao \etal \cite{gao2019graph} designed a new graph pooling (gPool) and graph
 unpooling (gUnpool) operation based on GCN and proposed an encoder-decoder model
 namely graph U-Net. The graph U-Net achieves better performance than popular
 UNets by adding a small number of parameters. In contrast to traditional
@@ -352,7 +404,7 @@ value of depth exceeds $4$. However, the graph U-Net shows a stronger capability
 of feature encoding than popular U-Nets when the value of depth is smaller or
 equivalent to $4$.
 
-Yang et al. \cite{yang2020cpr} proposed the end-to-end conditional partial
+Yang \etal \cite{yang2020cpr} proposed the end-to-end conditional partial
 residual plot convolutional network CPR-GCN for automatic anatomical marking of
 coronary arteries. Authors showed that the GCN-based approach provided better
 performance and stronger robustness than traditional and recent depth
@@ -366,7 +418,7 @@ Currently, many deep learning algorithms tend to make judgments by using
 algorithms cannot be explained sufficiently and give convincing evidence for
 each specific prediction. Therefore, the study of the interpretability of deep
 neural networks is a hot topic at present
-Sun et al. \cite{sun2020saunet} proposed the SAU-Net which focuses on the
+Sun \etal \cite{sun2020saunet} proposed the SAU-Net which focuses on the
 interpretability and robustness of models. The proposed architecture attempts to
 address the problem of poor edge segmentation accuracy in medical images by
 using a secondary shape stream. Especially, the shape stream and the regular
@@ -385,7 +437,7 @@ Recently, transformer-based architectures have become very popular and replaced
 the convolutional operator and use self-attention modules to compose entire
 encoderdecoder structures that can encode long-range dependencies. It has been a
 great success in the field of natural language processing.
-Dosovitskiy et al. \cite{dosovitskiy2020image} proposed Vision Transformer (ViT)
+Dosovitskiy \etal \cite{dosovitskiy2020image} proposed Vision Transformer (ViT)
 that can classify images directly using the Transformer. Recently, a large
 number of researchers have applied the transformer to medical image
 segmentation. CNNs have a comparative advantage in extracting the underlying
@@ -399,7 +451,7 @@ between these elements. However, if all the convolutional operators in computer
 vision tasks are replaced by Transformer, it may suffer from many problems, such
 as high computational cost and memory usage. From existing research, the
 combination of Transformer and CNNs may lead to better results.
-Recently, Chen et al. \cite{chen2021transunet} proposed a U-Net shaped network,
+Recently, Chen \etal \cite{chen2021transunet} proposed a U-Net shaped network,
 where the encoder was made of ViT only while the decoder was fully
 convolutional.
 
